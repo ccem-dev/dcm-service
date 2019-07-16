@@ -1,0 +1,147 @@
+version: "3"
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.1
+    environment:
+      ES_JAVA_OPTS: -Xms1024m -Xmx1024m
+      TAKE_FILE_OWNERSHIP: 1
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/local/dcm4chee-arc/elasticsearch:/usr/share/elasticsearch/data
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:6.4.1
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+    depends_on:
+      - elasticsearch
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+  logstash:
+    image: dcm4che/logstash-dcm4chee:6.4.1-6
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+    ports:
+      - "12201:12201/udp"
+      - "8514:8514/udp"
+      - "8514:8514"
+    depends_on:
+      - elasticsearch
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+  ldap:
+    image: dcm4che/slapd-dcm4chee:2.4.44-15.1
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://172.17.0.1:12201"
+        tag: slapd
+    ports:
+      - "389:389"
+    env_file: docker-compose.env
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/local/dcm4chee-arc/ldap:/var/lib/ldap
+      - /var/local/dcm4chee-arc/slapd.d:/etc/ldap/slapd.d
+  keycloak:
+    image: dcm4che/keycloak:4.6.0-15.1-logstash
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://172.17.0.1:12201"
+        tag: keycloak
+    ports:
+      - "8880:8880"
+      - "8843:8843"
+      - "8990:8990"
+    env_file: docker-compose.env
+    environment:
+      HTTP_PORT: 8880
+      HTTPS_PORT: 8843
+      MANAGEMENT_HTTP_PORT: 8990
+      KEYCLOAK_WAIT_FOR: ldap:389 logstash:8514
+    depends_on:
+      - ldap
+      - logstash
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/local/dcm4chee-arc/keycloak:/opt/keycloak/standalone
+  keycloak-proxy:
+    image: dcm4che/keycloak-proxy:4.6.0-2
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://172.17.0.1:12201"
+        tag: keycloak-proxy
+    ports:
+      - "8601:8601"
+      - "8643:8643"
+    env_file: docker-compose.env
+    environment:
+      HTTP_PORT: 8601
+      HTTPS_PORT: 8643
+    depends_on:
+      - logstash
+      - kibana
+      - keycloak
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+  db:
+    image: dcm4che/postgres-dcm4chee:11.1-15
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://172.17.0.1:12201"
+        tag: postgres
+    ports:
+      - "5432:5432"
+    env_file: docker-compose.env
+    depends_on:
+      - logstash
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/local/dcm4chee-arc/db:/var/lib/postgresql/data
+  arc:
+    image: dcm4che/dcm4chee-arc-psql:5.15.1-logstash-secure
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://172.17.0.1:12201"
+        tag: dcm4chee-arc
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+      - "9990:9990"
+      - "11112:11112"
+      - "2575:2575"
+    env_file: docker-compose.env
+    environment:
+      WILDFLY_CHOWN: /opt/wildfly/standalone /storage
+      WILDFLY_WAIT_FOR: ldap:389 db:5432 logstash:8514
+    depends_on:
+      - ldap
+      - keycloak
+      - db
+      - logstash
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/local/dcm4chee-arc/wildfly:/opt/wildfly/standalone
+      - /var/local/dcm4chee-arc/storage:/storage
