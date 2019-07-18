@@ -13,9 +13,9 @@ services:
       - "9200:9200"
       - "9300:9300"
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-      - /var/local/dcm4chee-arc/elasticsearch:/usr/share/elasticsearch/data
+      - ./persistence/etc/localtime:/etc/localtime:ro
+      - ./persistence/etc/timezone:/etc/timezone:ro
+      - ./persistence/dcm4chee-arc/elasticsearch:/usr/share/elasticsearch/data
   kibana:
     image: docker.elastic.co/kibana/kibana-oss:6.4.1
     logging:
@@ -25,8 +25,8 @@ services:
     depends_on:
       - elasticsearch
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
+      - ./persistence/etc/localtime:/etc/localtime:ro
+      - ./persistence/etc/timezone:/etc/timezone:ro
   logstash:
     image: dcm4che/logstash-dcm4chee:6.4.1-6
     logging:
@@ -40,8 +40,8 @@ services:
     depends_on:
       - elasticsearch
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
+      - ./persistence/etc/localtime:/etc/localtime:ro
+      - ./persistence/etc/timezone:/etc/timezone:ro
   ldap:
     image: dcm4che/slapd-dcm4chee:2.4.44-15.1
     logging:
@@ -53,10 +53,10 @@ services:
       - "389:389"
     env_file: docker-compose.env
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-      - /var/local/dcm4chee-arc/ldap:/var/lib/ldap
-      - /var/local/dcm4chee-arc/slapd.d:/etc/ldap/slapd.d
+      - ./persistence/etc/localtime:/etc/localtime:ro
+      - ./persistence/etc/timezone:/etc/timezone:ro
+      - ./persistence/dcm4chee-arc/ldap:/var/lib/ldap
+      - ./persistence/dcm4chee-arc/slapd.d:/etc/ldap/slapd.d
   keycloak:
     image: dcm4che/keycloak:4.6.0-15.1-logstash
     logging:
@@ -78,9 +78,9 @@ services:
       - ldap
       - logstash
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-      - /var/local/dcm4chee-arc/keycloak:/opt/keycloak/standalone
+      - ./persistence/etc/localtime:/etc/localtime:ro
+      - ./persistence/etc/timezone:/etc/timezone:ro
+      - ./persistence/dcm4chee-arc/keycloak:/opt/keycloak/standalone
   keycloak-proxy:
     image: dcm4che/keycloak-proxy:4.6.0-2
     logging:
@@ -100,8 +100,8 @@ services:
       - kibana
       - keycloak
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
+      - ./persistence/etc/localtime:/etc/localtime:ro
+      - ./persistence/etc/timezone:/etc/timezone:ro
   db:
     image: dcm4che/postgres-dcm4chee:11.1-15
     logging:
@@ -115,9 +115,9 @@ services:
     depends_on:
       - logstash
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-      - /var/local/dcm4chee-arc/db:/var/lib/postgresql/data
+      - ./persistence/etc/localtime:/etc/localtime:ro
+      - ./persistence/etc/timezone:/etc/timezone:ro
+      - ./persistence/dcm4chee-arc/db:/var/lib/postgresql/data
   arc:
     image: dcm4che/dcm4chee-arc-psql:5.15.1-logstash-secure
     logging:
@@ -141,7 +141,7 @@ services:
       - db
       - logstash
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-      - /var/local/dcm4chee-arc/wildfly:/opt/wildfly/standalone
-      - /var/local/dcm4chee-arc/storage:/storage
+      - ./persistence/etc/localtime:/etc/localtime:ro
+      - ./persistence/etc/timezone:/etc/timezone:ro
+      - ./persistence/dcm4chee-arc/wildfly:/opt/wildfly/standalone
+      - ./persistence/dcm4chee-arc/storage:/storage
