@@ -8,7 +8,7 @@ docker run --network=dcm4chee_default --name logstash \
            -p 8514:8514 \
            -v /etc/localtime:/etc/localtime:ro \
            -v /etc/timezone:/etc/timezone:ro \
-           -v /var/local/dcm4chee-arc/logstash/filter-hashtree:/usr/share/logstash/data/filter-hashtree \
+           -v $(pwd)/persistence/dcm4chee-arc/logstash/filter-hashtree:/usr/share/logstash/data/filter-hashtree \
            -d dcm4che/logstash-dcm4chee:7.1.1-9
 
 docker run --network=dcm4chee_default --name db \
@@ -21,7 +21,7 @@ docker run --network=dcm4chee_default --name db \
            -e POSTGRES_PASSWORD=pacs \
            -v /etc/localtime:/etc/localtime:ro \
            -v /etc/timezone:/etc/timezone:ro \
-           -v /var/local/dcm4chee-arc/db:/var/lib/postgresql/data \
+           -v $(pwd)/persistence/dcm4chee-arc/db:/var/lib/postgresql/data \
            -d dcm4che/postgres-dcm4chee:11.2-16
 
 
@@ -35,8 +35,8 @@ docker run --network=dcm4chee_default --name ldap \
            -e SYSLOG_PROTOCOL=TLS \
            -v /etc/localtime:/etc/localtime:ro \
            -v /etc/timezone:/etc/timezone:ro \
-           -v /var/local/dcm4chee-arc/ldap:/var/lib/ldap \
-           -v /var/local/dcm4chee-arc/slapd.d:/etc/ldap/slapd.d \
+           -v $(pwd)/persistence/dcm4chee-arc/ldap:/var/lib/ldap \
+           -v $(pwd)/persistence/dcm4chee-arc/slapd.d:/etc/ldap/slapd.d \
            -d dcm4che/slapd-dcm4chee:2.4.44-17.1
 
 
@@ -54,7 +54,7 @@ docker run --network=dcm4chee_default --name elasticsearch \
            -p 9300:9300 \
            -v /etc/localtime:/etc/localtime:ro \
            -v /etc/timezone:/etc/timezone:ro \
-           -v /var/local/dcm4chee-arc/elasticsearch:/usr/share/elasticsearch/data \
+           -v $(pwd)/persistence/dcm4chee-arc/elasticsearch:/usr/share/elasticsearch/data \
            -d docker.elastic.co/elasticsearch/elasticsearch-oss:7.1.1
 
 
@@ -74,7 +74,7 @@ docker run --network=dcm4chee_default --name keycloak \
            -e KEYCLOAK_WAIT_FOR="ldap:389 logstash:8514" \
            -v /etc/localtime:/etc/localtime:ro \
            -v /etc/timezone:/etc/timezone:ro \
-           -v /var/local/dcm4chee-arc/keycloak:/opt/keycloak/standalone \
+           -v $(pwd)/persistence/dcm4chee-arc/keycloak:/opt/keycloak/standalone \
            -d dcm4che/keycloak:6.0.1-17.0
 
 
@@ -119,5 +119,5 @@ docker run --network=dcm4chee_default --name arc \
            -e AUTH_SERVER_URL=https://172.17.0.1:8843/auth \
            -v /etc/localtime:/etc/localtime:ro \
            -v /etc/timezone:/etc/timezone:ro \
-           -v /var/local/dcm4chee-arc/wildfly:/opt/wildfly/standalone \
+           -v $(pwd)/persistence/dcm4chee-arc/wildfly:/opt/wildfly/standalone \
            -d dcm4che/dcm4chee-arc-psql:5.17.1-secure
