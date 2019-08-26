@@ -138,6 +138,56 @@ sudo docker run --restart unless-stopped --network=dcm4chee_default --name keycl
 ```           
 #####################################################################
 
+6) Token de acesso:
+
+Referência: https://github.com/dcm4che/dcm4chee-arc-light/wiki/Getting-OIDC-Access-Token-using-curl
+
+Execute o comando e acesse a página do console (Keycloak) com o link retornado
+```
+$ echo https://$(ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'):8843/auth/admin/dcm4che/console
+```
+- Na opção Clients, crie um novo cliente com as seguinte informações:
+```
+CLIENT ID*:                      curl
+Access Type:                     confidential
+Standard Flow Enabled:           OFF
+Implicit Flow Enabled:           OFF
+Direct Access Grants Enabled:    ON
+Service Accounts Enabled:        ON
+Authorization Enabled:           OFF
+[Save]
+```
+- Na aba Service Account Roles, selecione user e clique em [Add selected »]
+
+- Na aba Credentials, copie o valor de Secret para uso futuro.
+
+6.1) Usando OAuth 2.0 no Postman:
+
+Na aba Authentication selecione:
+```
+Type: OAuth 2.0 
+Add authorization data to: Request Headers
+```
+Clique em Get New Access Token e preencha os parâmetros conforme descrito abaixo:
+```
+grant_type            = client_credentials
+Access Token URL      = https://<IP_do_Host>:8843/auth/realms/dcm4che/protocol/openid-connect/token
+client_id             = curl
+client_secret         = <Cole_Aqui_o_Valor_de_Secret>
+Client Authentication = Send as Basic Auth header
+[Request Token]
+```
+Selecione o Token recém criado na lista de Tokens disponíveis (Available Tokens).
+
+6.2) Usando o Terminal do Ubuntu:
+```
+$ RESULT=`curl -k --data "grant_type=client_credentials&client_id=curl&client_secret=<Cole_Aqui_o_Valor_de_Secret>" https://$(ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'):8843/auth/realms/dcm4che/protocol/openid-connect/token`
+$ echo $RESULT | python -m json.tool
+$ TOKEN=`echo $RESULT | sed 's/.*access_token":"\([^"]*\).*/\1/'`
+$ echo $TOKEN
+```
+#####################################################################
+
 Comandos úteis:
 ```
 $ sudo docker network create dcm4chee_default
