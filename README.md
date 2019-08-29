@@ -80,7 +80,7 @@ Password: admin
 - Preencha os campos
 ```
 CLIENT ID*: dcm4chee-arc-ui
-Root URL  : https://<Seu_IP_aqui>/dcm4chee-arc/ui2
+Root URL  : https://<Seu_IP_aqui>:8443/dcm4chee-arc/ui2
 [Save]
 ```
 
@@ -102,7 +102,6 @@ Root URL  : https://<Seu_IP_aqui>:8643
 [Save]
 ```
 - Na aba Settings, altere Access Type de public para confidential. Pressione Save no fim da página.
-- Na aba Credentials, copie o valor do campo Secret.
 - Na aba Mappers, pressione Create e preencha os campos conforme abaixo:
 ```
 Name:			  audience
@@ -110,6 +109,7 @@ Mapper Type:		  Audience
 Included Client Audience: kibana
 [Save]
 ```
+- Na aba Credentials, copie o valor do campo Secret.
 
 5.5) keycloak-gatekeeper
 -Insira o valor (obtido no passo 5.4) quando solicitado na linha de comando do terminal.
