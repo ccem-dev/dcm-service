@@ -57,13 +57,13 @@ Passo 5: Configuração dos clientes
 
 Determine seu IP:
 ```
-$ ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'
+$ hostname -I | awk '{print $1}'
 ```
 
 5.1) Login no Keycloak
 - Execute o comando:
 ```
-$ echo https://$(ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'):8843/auth/admin/dcm4che/console
+$ echo https://$(hostname -I | awk '{print $1}'):8843/auth/admin/dcm4che/console
 ```
 - Abra um navegador e acesse o URL apresentado pelo comando anterior. Exemplo: 
 
@@ -118,13 +118,13 @@ Included Client Audience: kibana
 ```
 sudo docker run --restart unless-stopped --network=dcm4chee_default --name keycloak-gatekeeper \
            --log-driver gelf \
-           --log-opt gelf-address=udp://$(ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'):12201 \
+           --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
            --log-opt tag=keycloak-gatekeeper \
            -p 8643:8643 \
            -e PROXY_LISTEN=:8643 \
-           -e PROXY_REDIRECTION_URL=https://$(ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'):8643 \
+           -e PROXY_REDIRECTION_URL=https://$(hostname -I | awk '{print $1}'):8643 \
            -e PROXY_UPSTREAM_URL=http://kibana:5601 \
-           -e PROXY_DISCOVERY_URL=https://$(ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'):8843/auth/realms/dcm4che \
+           -e PROXY_DISCOVERY_URL=https://$(hostname -I | awk '{print $1}'):8843/auth/realms/dcm4che \
            -e PROXY_CLIENT_ID=kibana \
            -e PROXY_CLIENT_SECRET=<Cole_aqui_Secret_do_passo_5.4> \
            -e PROXY_ENCRYPTION_KEY=AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j \
@@ -144,7 +144,7 @@ Referência: https://github.com/dcm4che/dcm4chee-arc-light/wiki/Getting-OIDC-Acc
 
 Execute o comando e acesse a página do console (Keycloak) com o link retornado
 ```
-$ echo https://$(ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'):8843/auth/admin/dcm4che/console
+$ echo https://$(hostname -I | awk '{print $1}'):8843/auth/admin/dcm4che/console
 ```
 - Na opção Clients, crie um novo cliente com as seguinte informações:
 ```
@@ -181,7 +181,7 @@ Selecione o Token recém criado na lista de Tokens disponíveis (Available Token
 
 6.2) Usando o Terminal do Ubuntu:
 ```
-$ RESULT=`curl -k --data "grant_type=client_credentials&client_id=curl&client_secret=<Cole_Aqui_o_Valor_de_Secret>" https://$(ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'):8843/auth/realms/dcm4che/protocol/openid-connect/token`
+$ RESULT=`curl -k --data "grant_type=client_credentials&client_id=curl&client_secret=<Cole_Aqui_o_Valor_de_Secret>" https://$(hostname -I | awk '{print $1}'):8843/auth/realms/dcm4che/protocol/openid-connect/token`
 $ echo $RESULT | python -m json.tool
 $ TOKEN=`echo $RESULT | sed 's/.*access_token":"\([^"]*\).*/\1/'`
 $ echo $TOKEN
