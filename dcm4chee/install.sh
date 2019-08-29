@@ -33,7 +33,7 @@ sudo docker run --restart unless-stopped --network=dcm4chee_default --name logst
 echo Preparing ldap
 sudo docker run --restart unless-stopped --network=dcm4chee_default --name ldap \
            --log-driver gelf \
-	   --log-opt gelf-address=udp://$(ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'):12201 \
+	   --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
            --log-opt tag=slapd \
            -p 389:389 \
            -e SYSLOG_HOST=logstash \
@@ -48,7 +48,7 @@ sudo docker run --restart unless-stopped --network=dcm4chee_default --name ldap 
 echo Preparing keycloak
 sudo docker run --restart unless-stopped --network=dcm4chee_default --name keycloak \
            --log-driver gelf \
-	   --log-opt gelf-address=udp://$(ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'):12201 \
+	   --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
            --log-opt tag=keycloak \
            -p 8880:8880 \
            -p 8843:8843 \
@@ -68,7 +68,7 @@ sudo docker run --restart unless-stopped --network=dcm4chee_default --name keycl
 echo Preparing db
 sudo docker run --restart unless-stopped --network=dcm4chee_default --name db \
            --log-driver gelf \
-           --log-opt gelf-address=udp://$(ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'):12201 \
+           --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
            --log-opt tag=postgres \
            -p 5432:5432 \
            -e POSTGRES_DB=pacsdb \
@@ -82,7 +82,7 @@ sudo docker run --restart unless-stopped --network=dcm4chee_default --name db \
 echo Preparing arc
 sudo docker run --restart unless-stopped --network=dcm4chee_default --name arc \
            --log-driver gelf \
-           --log-opt gelf-address=udp://$(ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'):12201 \
+           --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
            --log-opt tag=dcm4chee-arc \
            -p 8080:8080 \
            -p 8443:8443 \
@@ -95,26 +95,26 @@ sudo docker run --restart unless-stopped --network=dcm4chee_default --name arc \
            -e POSTGRES_PASSWORD=pacs \
            -e LOGSTASH_HOST=logstash \
            -e WILDFLY_WAIT_FOR="ldap:389 db:5432 logstash:8514" \
-           -e AUTH_SERVER_URL=https://$(ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'):8843/auth \
+           -e AUTH_SERVER_URL=https://$(hostname -I | awk '{print $1}'):8843/auth \
            -v /etc/localtime:/etc/localtime:ro \
            -v /etc/timezone:/etc/timezone:ro \
            -v $(pwd)/persistence/dcm4chee-arc/wildfly:/opt/wildfly/standalone \
            -d dcm4che/dcm4chee-arc-psql:5.17.1-secure
 
 echo
-echo "Configure the clients on: "$(echo https://$(ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'):8843/auth/admin/dcm4che/console)
+echo "Configure the clients on: "$(echo https://$(hostname -I | awk '{print $1}'):8843/auth/admin/dcm4che/console)
 
 read -p "Insert SECRET here: " SECRET_VALUE
 
 sudo docker run --restart unless-stopped --network=dcm4chee_default --name keycloak-gatekeeper \
            --log-driver gelf \
-           --log-opt gelf-address=udp://$(ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'):12201 \
+           --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
            --log-opt tag=keycloak-gatekeeper \
            -p 8643:8643 \
            -e PROXY_LISTEN=:8643 \
-           -e PROXY_REDIRECTION_URL=https://$(ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'):8643 \
+           -e PROXY_REDIRECTION_URL=https://$(hostname -I | awk '{print $1}'):8643 \
            -e PROXY_UPSTREAM_URL=http://kibana:5601 \
-           -e PROXY_DISCOVERY_URL=https://$(ip -4 addr show eno1 | grep -Po 'inet \K[\d.]+'):8843/auth/realms/dcm4che \
+           -e PROXY_DISCOVERY_URL=https://$(hostname -I | awk '{print $1}'):8843/auth/realms/dcm4che \
            -e PROXY_CLIENT_ID=kibana \
            -e PROXY_CLIENT_SECRET=$SECRET_VALUE \
            -e PROXY_ENCRYPTION_KEY=AgXa7xRcoClDEU0ZDSH4X0XhL5Qy2Z2j \
