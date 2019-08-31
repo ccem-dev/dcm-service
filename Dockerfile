@@ -1,0 +1,15 @@
+FROM node:10.16.0
+COPY api/. src/
+WORKDIR /src
+ENV MEMORY 2048
+ENV MONGO_HOSTNAME localhost
+ENV MONGO_PORT 27017
+ENV MONGO_USERNAME root
+ENV MONGO_PASSWORD XRYs9yjU
+ENV MONGO_DB otus
+ENV API_PORT 8080
+EXPOSE ${API_PORT}
+CMD node --max-old-space-size=$MEMORY --optimize-for-size app.js
+
+
+

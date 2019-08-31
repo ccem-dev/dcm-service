@@ -1,0 +1,49 @@
+{
+  "name": "dcm-service",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ccem-dev/dcm-service"
+  },
+  "description": "Node api for dcm-service",
+  "main": "app.js",
+  "scripts": {
+    "test": "nyc --reporter=html --reporter=text mocha",
+    "unit": "mocha test/**/*.js",
+    "dev": "node --max-old-space-size=1024 --optimize-for-size app.js",
+    "gulp": "gulp",
+    "start": "npm run gulp browser-sync"
+  },
+  "nyc": {
+    "include": [
+      "app/**/*.js",
+      "test/**/*-spec.js"
+    ],
+    "extension": [
+      ".js"
+    ],
+    "all": true,
+    "require": [],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "consign": "0.1.6",
+    "express": "4.16.4",
+    "express-list-endpoints": "4.0.1",
+    "mongoose": "5.3.8"
+  },
+  "devDependencies": {
+    "mocha": "6.1.4",
+    "nyc": "14.1.1",
+    "gulp": "3.9.1",
+    "browser-sync": "2.11.2"
+  }
+}
