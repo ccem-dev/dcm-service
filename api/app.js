@@ -1,5 +1,4 @@
 var app = require("./config/server");
-const mongoose = require("mongoose");
 const listEndpoints = require('express-list-endpoints');
 
 const {
@@ -11,21 +10,7 @@ const {
   API_PORT
 } = process.env;
 
-const port = API_PORT || 8080;
-
-const options = {
-  useNewUrlParser: true,
-  reconnectTries: Number.MAX_VALUE,
-  reconnectInterval: 500,
-  connectTimeoutMS: 10000,
-  keepAlive: 1,
-  auth: {
-    user: MONGO_USERNAME || "root",
-    password: MONGO_PASSWORD || "XRYs9yjU"
-  }
-};
-
-const url = `mongodb://${MONGO_HOSTNAME || "localhost"}:${MONGO_PORT || "27017"}/${MONGO_DB || "otus"}?authSource=admin`;
+const port = API_PORT || 8081;
 
 connect();
 
@@ -35,12 +20,13 @@ function listen() {
 }
 
 function connect() {
-  mongoose.connection
-    .on('error', console.log)
-    .on('disconnected', connect)
-    .once('open', listen);
+  // mongoose.connection
+  //   .on('error', console.log)
+  //   .on('disconnected', connect)
+  //   .once('open', listen);
+  listen();
   endpointsList();
-  return mongoose.connect(url, options);
+  // return mongoose.connect(url, options);
 }
 
 function endpointsList() {

@@ -38,7 +38,8 @@
     "consign": "0.1.6",
     "express": "4.16.4",
     "express-list-endpoints": "4.0.1",
-    "mongoose": "5.3.8"
+    "mongoose": "5.3.8",
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "mocha": "6.1.4",
