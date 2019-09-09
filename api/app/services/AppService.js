@@ -6,13 +6,19 @@ process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 //todo: check what todo with those tsl errors
 
 
-requestToken()
-    .then(result => {
-        // requestTester(result);
-        // requestStudies(result)
-        requestImage(result)
-        console.log(result)
-    });
+module.exports = {
+    doit:doit
+};
+
+function doit() {
+    return requestToken()
+        .then(token => {
+            // requestTester(token);
+            // requestStudies(token)
+            return requestImage(token)
+            // console.log(token)
+        });
+}
 
 
 function requestToken() {
@@ -66,35 +72,36 @@ function requestStudies(token) {
 }
 
 function requestImage(token) {
-    var url = 'https://143.54.220.73:8443/dcm4chee-arc/aets/DCM4CHEE/' +
-        'wado?' +
-        'requestType=WADO&' +
-        'studyUID=1.2.392.200046.100.3.3.200137.15.20170223103559&' +
-        'seriesUID=1.2.392.200046.100.3.3.200137.15.20170223103559.1&' +
-        'objectUID=1.2.392.200046.100.3.3.200137.15.20170223103559.1.1.1&' +
-        'contentType=image/jpeg&' +
-        'frameNumber=1';
+    return new Promise((resolve, reject) => {
 
-    var options = {
-        method: 'GET',
-        url: url,
-        qs: {'00080061': ''},
-        headers:
-            {
-                'Postman-Token': 'eee3ff1e-3e31-4ad8-a488-431281bf8a3f',
-                'cache-control': 'no-cache',
-                Authorization: 'Bearer ' + token
-            }
-    };
+        var url = 'https://143.54.220.73:8443/dcm4chee-arc/aets/DCM4CHEE/' +
+            'wado?' +
+            'requestType=WADO&' +
+            'studyUID=1.2.392.200046.100.3.3.200137.15.20170223103559&' +
+            'seriesUID=1.2.392.200046.100.3.3.200137.15.20170223103559.1&' +
+            'objectUID=1.2.392.200046.100.3.3.200137.15.20170223103559.1.1.1&' +
+            'contentType=image/jpeg&' +
+            'frameNumber=1';
+
+        var options = {
+            method: 'GET',
+            url: url,
+            qs: {'00080061': ''},
+            headers:
+                {
+                    'cache-control': 'no-cache',
+                    Authorization: 'Bearer ' + token
+                }
+        };
 
 
-    request(options, function (error, response, body) {
-        if (error) throw new Error(error);
+        request(options, function (error, response, body) {
+            if (error) throw new Error(error);
 
-        console.log(body);
-        // console.log(body);
+            resolve(body);
+
+        });
     });
-
 }
 
 function requestTester(token) {
