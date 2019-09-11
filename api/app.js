@@ -33,5 +33,3 @@ function endpointsList() {
   let endpoints = listEndpoints(app);
   console.table(endpoints)
 }
-
-

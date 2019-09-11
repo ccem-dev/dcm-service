@@ -36,18 +36,19 @@ module.exports = function (application) {
             });
     });
 
-    application.get('/api/retinography', async function (req, res) {
+    application.post('/api/retinography', jsonParser, async function (req, res) {
         //TODO: call controller
-        // res.status(200).send('result')
-
-        service.doit()
+        res.status(200).send("{'result':'result'}")
+      /*  service.doit()
             .then(result => {
-                res.status(200).send({
+		    res.status(200).send({
                     date: "2019-09-09T17:40:34.699Z",
-                    eye: 'left',
+                   eye: 'left',
                     result: result
                 })
-            });
+            });*/
+
+        // console.log(jsonParser());
     });
 
 
