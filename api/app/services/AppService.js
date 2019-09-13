@@ -7,7 +7,7 @@ process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
 
 module.exports = {
-    doit:doit
+    doit: doit
 };
 
 function doit() {
@@ -15,7 +15,7 @@ function doit() {
         .then(token => {
             // requestTester(token);
             // requestStudies(token)
-            return requestImage(token)
+            return requestAgain(token)
             // console.log(token)
         });
 }
@@ -28,15 +28,15 @@ function requestToken() {
             method: 'POST',
             url: 'https://143.54.220.73:8843/auth/realms/dcm4che/protocol/openid-connect/token',
             headers:
-                {
-                    'cache-control': 'no-cache'
-                },
+            {
+                'cache-control': 'no-cache'
+            },
             form:
-                {
-                    grant_type: 'client_credentials',
-                    client_id: 'curl',
-                    client_secret: '5a7def58-df35-412a-94fa-1d1fdf0f6000',
-                }
+            {
+                grant_type: 'client_credentials',
+                client_id: 'curl',
+                client_secret: '5a7def58-df35-412a-94fa-1d1fdf0f6000',
+            }
         };
 
         request(options, function (error, response, body) {
@@ -52,13 +52,13 @@ function requestStudies(token) {
     var options = {
         method: 'GET',
         url: 'https://143.54.220.73:8443/dcm4chee-arc/aets/DCM4CHEE/rs/studies',
-        qs: {'00100020': 'teste'},
+        qs: { '00100020': 'teste' },
         headers:
-            {
-                'Postman-Token': 'eee3ff1e-3e31-4ad8-a488-431281bf8a3f',
-                'cache-control': 'no-cache',
-                Authorization: 'Bearer ' + token
-            }
+        {
+            'Postman-Token': 'eee3ff1e-3e31-4ad8-a488-431281bf8a3f',
+            'cache-control': 'no-cache',
+            Authorization: 'Bearer ' + token
+        }
     };
 
 
@@ -86,12 +86,20 @@ function requestImage(token) {
         var options = {
             method: 'GET',
             url: url,
-            qs: {'00080061': ''},
+            qs: {
+                requestType: 'WADO',
+                studyUID: '1.2.392.200046.100.3.3.200159.961.20121211121234',
+                seriesUID: '1.2.392.200046.100.3.3.200159.961.20121211121234.1',
+                objectUID: '1.2.392.200046.100.3.3.200159.961.20121211121234.1.1.1',
+                contentType: 'image/jpeg',
+                columns: '3888',
+                // encoding: 'Base64'
+            },
             headers:
-                {
-                    'cache-control': 'no-cache',
-                    Authorization: 'Bearer ' + token
-                }
+            {
+                'cache-control': 'no-cache',
+                Authorization: 'Bearer ' + token
+            }
         };
 
 
@@ -118,18 +126,57 @@ function requestTester(token) {
     var options = {
         method: 'GET',
         url: 'https://143.54.220.73:8443/dcm4chee-arc/aets/DCM4CHEE/wado',
-        qs: {'00100020': 'teste'},
+        qs: { '00100020': 'teste' },
         headers:
-            {
-                'Postman-Token': 'eee3ff1e-3e31-4ad8-a488-431281bf8a3f',
-                'cache-control': 'no-cache',
-                Authorization: 'Bearer ' + token
-            }
+        {
+            'Postman-Token': 'eee3ff1e-3e31-4ad8-a488-431281bf8a3f',
+            'cache-control': 'no-cache',
+            Authorization: 'Bearer ' + token
+        }
     };
 
 
     request(options, function (error, response, body) {
         if (error) throw new Error(error);
         console.log(body)
+    });
+}
+
+
+
+var http = require("https");
+
+function requestAgain(token) {
+    return new Promise((resolve, reject) => {
+
+    var options = {
+        "method": "GET",
+        "hostname": "143.54.220.73",
+        "port": "8443",
+        "path": "/dcm4chee-arc/aets/DCM4CHEE/wado?requestType=WADO&studyUID=1.2.392.200046.100.3.3.200159.961.20121211121234&seriesUID=1.2.392.200046.100.3.3.200159.961.20121211121234.1&objectUID=1.2.392.200046.100.3.3.200159.961.20121211121234.1.1.1&contentType=image%2Fjpeg&columns=388",
+        "headers": {
+          "content-type": "application/json",
+          "authorization": "Bearer " + token,
+          "cache-control": "no-cache",
+          "postman-token": "69219bf4-bb57-11d6-1c6c-adcc67713343"
+        }
+      };
+      
+      var req = http.request(options, function (res) {
+        var chunks = [];
+      
+        res.on("data", function (chunk) {
+          chunks.push(chunk);
+        });
+      
+        res.on("end", function () {
+          var body = Buffer.concat(chunks);
+          resolve(body.toString());
+        });
+      });
+      
+      req.write(JSON.stringify({ recruitmentNumber: 98049823,
+        variables: [ { name: '', value: '', sending: '' } ] }));
+      req.end();
     });
 }

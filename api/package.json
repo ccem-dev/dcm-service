@@ -35,6 +35,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "btoa": "^1.2.1",
     "consign": "0.1.6",
     "express": "4.16.4",
     "express-list-endpoints": "4.0.1",
