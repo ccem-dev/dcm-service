@@ -1,32 +1,27 @@
 //TODO: call model
 // application.app
 const request = require('request');
+const https = require('https');
 
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 //todo: check what todo with those tsl errors
-
 
 module.exports = {
     doit: doit
 };
 
-function doit() {
+function doit(data) {
     return requestToken()
         .then(token => {
-            // requestTester(token);
-            // requestStudies(token)
-            return requestAgain(token)
-            // console.log(token)
+            return requestImage(token, data)
         });
 }
 
-
 function requestToken() {
     return new Promise((resolve, reject) => {
-
         var options = {
             method: 'POST',
-            url: 'https://143.54.220.73:8843/auth/realms/dcm4che/protocol/openid-connect/token',
+            url: 'https://143.54.220.35:8843/auth/realms/dcm4che/protocol/openid-connect/token',
             headers:
             {
                 'cache-control': 'no-cache'
@@ -35,38 +30,13 @@ function requestToken() {
             {
                 grant_type: 'client_credentials',
                 client_id: 'curl',
-                client_secret: '5a7def58-df35-412a-94fa-1d1fdf0f6000',
+                client_secret: '72126ea5-28e3-4307-9dde-6f63cc6f9aa5',
             }
         };
 
         request(options, function (error, response, body) {
             if (error) throw new Error(error);
-
             resolve(JSON.parse(body).access_token);
-        });
-    });
-
-}
-
-function requestStudies(token) {
-    var options = {
-        method: 'GET',
-        url: 'https://143.54.220.73:8443/dcm4chee-arc/aets/DCM4CHEE/rs/studies',
-        qs: { '00100020': 'teste' },
-        headers:
-        {
-            'Postman-Token': 'eee3ff1e-3e31-4ad8-a488-431281bf8a3f',
-            'cache-control': 'no-cache',
-            Authorization: 'Bearer ' + token
-        }
-    };
-
-
-    request(options, function (error, response, body) {
-        if (error) throw new Error(error);
-
-        JSON.parse(body).forEach(patient => {
-            console.log(patient['00081190']);
         });
     });
 }
@@ -74,109 +44,34 @@ function requestStudies(token) {
 function requestImage(token) {
     return new Promise((resolve, reject) => {
 
-        var url = 'https://143.54.220.73:8443/dcm4chee-arc/aets/DCM4CHEE/' +
-            'wado?' +
-            'requestType=WADO&' +
-            'studyUID=1.2.392.200046.100.3.3.200137.15.20170223103559&' +
-            'seriesUID=1.2.392.200046.100.3.3.200137.15.20170223103559.1&' +
-            'objectUID=1.2.392.200046.100.3.3.200137.15.20170223103559.1.1.1&' +
-            'contentType=image/jpeg&' +
-            'frameNumber=1';
-
-        var options = {
+        const options = {
             method: 'GET',
-            url: url,
-            qs: {
-                requestType: 'WADO',
-                studyUID: '1.2.392.200046.100.3.3.200159.961.20121211121234',
-                seriesUID: '1.2.392.200046.100.3.3.200159.961.20121211121234.1',
-                objectUID: '1.2.392.200046.100.3.3.200159.961.20121211121234.1.1.1',
-                contentType: 'image/jpeg',
-                columns: '3888',
-                // encoding: 'Base64'
-            },
-            headers:
-            {
-                'cache-control': 'no-cache',
-                Authorization: 'Bearer ' + token
+            hostname: '143.54.220.35',
+            port: '8443',
+            path: "/dcm4chee-arc/aets/DCM4CHEE/wado?requestType=WADO&studyUID=1.2.392.200046.100.3.3.200518.3824.20170307091443&seriesUID=1.2.392.200046.100.3.3.200518.3824.20170307091443.1&objectUID=1.2.392.200046.100.3.3.200518.3824.20170307091443.1.1.1&contentType=image%2Fjpeg&frameNumber=1",
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                "cache-control": "no-cache",
+                "Content-Type": "image/jpeg"
             }
-        };
-
-
-        request(options, function (error, response, body) {
-            if (error) throw new Error(error);
-
-            resolve(body);
-
-        });
-    });
-}
-
-function requestTester(token) {
-
-    var url = 'https://143.54.220.73:8443/dcm4chee-arc/aets/DCM4CHEE/' +
-        'wado?' +
-        'requestType=WADO&' +
-        'studyUID=1.2.392.200046.100.3.3.200137.15.20170223103559&' +
-        'seriesUID=1.2.392.200046.100.3.3.200137.15.20170223103559.1&' +
-        'objectUID=1.2.392.200046.100.3.3.200137.15.20170223103559.1.1.1&' +
-        'contentType=application/octet-stream&' +
-        'frameNumber=1';
-
-    var options = {
-        method: 'GET',
-        url: 'https://143.54.220.73:8443/dcm4chee-arc/aets/DCM4CHEE/wado',
-        qs: { '00100020': 'teste' },
-        headers:
-        {
-            'Postman-Token': 'eee3ff1e-3e31-4ad8-a488-431281bf8a3f',
-            'cache-control': 'no-cache',
-            Authorization: 'Bearer ' + token
         }
-    };
 
+        var req = https.request(options, incomingMessage => {
+            var chunks = [];
+            incomingMessage.on("data", function (chunk) {
+                chunks.push(chunk);
+            });
 
-    request(options, function (error, response, body) {
-        if (error) throw new Error(error);
-        console.log(body)
-    });
-}
-
-
-
-var http = require("https");
-
-function requestAgain(token) {
-    return new Promise((resolve, reject) => {
-
-    var options = {
-        "method": "GET",
-        "hostname": "143.54.220.73",
-        "port": "8443",
-        "path": "/dcm4chee-arc/aets/DCM4CHEE/wado?requestType=WADO&studyUID=1.2.392.200046.100.3.3.200159.961.20121211121234&seriesUID=1.2.392.200046.100.3.3.200159.961.20121211121234.1&objectUID=1.2.392.200046.100.3.3.200159.961.20121211121234.1.1.1&contentType=image%2Fjpeg&columns=388",
-        "headers": {
-          "content-type": "application/json",
-          "authorization": "Bearer " + token,
-          "cache-control": "no-cache",
-          "postman-token": "69219bf4-bb57-11d6-1c6c-adcc67713343"
-        }
-      };
-      
-      var req = http.request(options, function (res) {
-        var chunks = [];
-      
-        res.on("data", function (chunk) {
-          chunks.push(chunk);
+            incomingMessage.on("end", function () {
+                var body = Buffer.concat(chunks);
+                resolve(body);
+            });
         });
-      
-        res.on("end", function () {
-          var body = Buffer.concat(chunks);
-          resolve(body.toString());
+
+        req.on('error', error => {
+            reject(error);
         });
-      });
-      
-      req.write(JSON.stringify({ recruitmentNumber: 98049823,
-        variables: [ { name: '', value: '', sending: '' } ] }));
-      req.end();
+
+        req.end();
     });
 }

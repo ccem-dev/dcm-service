@@ -1,18 +1,16 @@
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
 var service = require('../services/AppService.js');
-var btoa = require('btoa');
 
 module.exports = function (application) {
     const controller = application.app.controllers.AppController;
 
-    application.all('*', function (req, res, next) {
-        res.header('Access-Control-Allow-Origin', '*');
-        res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-        // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        // res.header('Content-Type', 'image/jpeg');
-        
-        // res.header('Encoding', 'Base64');
+    application.all('*', function (req, response, next) {
+        response.header('Access-Control-Allow-Credentials', true);
+        response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        response.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+        response.header('Access-Control-Allow-Origin', '*');
+        response.header('Content-Type', 'image/jpeg');
         next();
     });
 
@@ -29,7 +27,6 @@ module.exports = function (application) {
     application.get('/participant-exams', async function (req, res) {
         //TODO: call controller
         // res.status(200).send('result')
-
         service.doit()
             .then(result => {
                 res.status(200).send(Buffer.from(result, 'hex'))
@@ -37,19 +34,58 @@ module.exports = function (application) {
     });
 
     application.post('/api/retinography', jsonParser, async function (req, res) {
+        // res.status(200).send("{'result':'result'}");
         //TODO: call controller
-        service.doit().then(result => {
-            // res.status(200).send({
-            //     date: "2019-09-09T17:40:34.699Z",
-            //     eye: 'left',
-            //     result: btoa(unescape(encodeURIComponent(result)))
-            // })
-            res.status(200).send(btoa(unescape(encodeURIComponent(result))))
-        });
+        service.doit()
+            .then(result => {
+                res.status(200).send(result)
+                // res.status(200).send(btoa(unescape(encodeURIComponent(result))))
+            });
+        // console.log(jsonParser());
     });
 
     application.post('/', jsonParser, function (req, res) {
         //TODO: call controller
         res.status(200).send({})
     });
+
+    var parse = function (img) {
+        var b = new Buffer(img, 'base64');
+        return b.toString();
+    }
+
+    var hexToBase64 = function (str) {
+        return Buffer.from((String.fromCharCode.apply(null, str.replace(/\r|\n/g, "").replace(/([\da-fA-F]{2}) ?/g, "0x$1 ").replace(/ +$/, "").split(" "))));
+    }
+
+    var btoa = function (str) { return Buffer.from(str).toString('base64') }
+
+    var base64Encode = function (str) {
+        var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        var out = "", i = 0, len = str.length, c1, c2, c3;
+        while (i < len) {
+            c1 = str.charCodeAt(i++) & 0xff;
+            if (i == len) {
+                out += CHARS.charAt(c1 >> 2);
+                out += CHARS.charAt((c1 & 0x3) << 4);
+                out += "==";
+                break;
+            }
+            c2 = str.charCodeAt(i++);
+            if (i == len) {
+                out += CHARS.charAt(c1 >> 2);
+                out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+                out += CHARS.charAt((c2 & 0xF) << 2);
+                out += "=";
+                break;
+            }
+            c3 = str.charCodeAt(i++);
+            out += CHARS.charAt(c1 >> 2);
+            out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+            out += CHARS.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
+            out += CHARS.charAt(c3 & 0x3F);
+        }
+        return out;
+    }
+
 };
