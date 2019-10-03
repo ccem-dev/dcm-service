@@ -10,7 +10,7 @@ module.exports = function (application) {
         response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         response.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
         response.header('Access-Control-Allow-Origin', '*');
-        response.header('Content-Type', 'image/jpeg');
+        response.header('Content-Type', 'application/json');
         next();
     });
 
@@ -37,9 +37,16 @@ module.exports = function (application) {
         // res.status(200).send("{'result':'result'}");
         //TODO: call controller
         service.doit()
-            .then(result => {
-                res.status(200).send(result)
-                // res.status(200).send(btoa(unescape(encodeURIComponent(result))))
+            .then(data => {
+                res.status(200).send({
+                    "data": {
+                        id: 'retinography',
+                        date: "2019-09-09T17:40:34.699Z",
+                        eye: 'left',
+                        result: JSON.stringify(data)
+                    }
+                })
+                // res.status(200).send(result)
             });
         // console.log(jsonParser());
     });
