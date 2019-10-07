@@ -34,20 +34,16 @@ module.exports = function (application) {
     });
 
     application.post('/api/retinography', jsonParser, async function (req, res) {
-        // res.status(200).send("{'result':'result'}");
-        //TODO: call controller
-        service.doit()
-            .then(data => {
-                res.status(200).send({
-                    "data": {
-                        id: 'retinography',
-                        date: "2019-09-09T17:40:34.699Z",
-                        eye: 'left',
-                        result: JSON.stringify(data)
-                    }
-                })
-                // res.status(200).send(result)
-            });
+        if (req.body.recruitmentNumber) {
+            service.doit(req.body.recruitmentNumber)
+                .then(data => {
+                    res.status(200).send({
+                        "data": data
+                    })
+                });
+        } else {
+            res.status(400).send();
+        }
         // console.log(jsonParser());
     });
 
@@ -55,44 +51,46 @@ module.exports = function (application) {
         //TODO: call controller
         res.status(200).send({})
     });
-
-    var parse = function (img) {
-        var b = new Buffer(img, 'base64');
-        return b.toString();
-    }
-
-    var hexToBase64 = function (str) {
-        return Buffer.from((String.fromCharCode.apply(null, str.replace(/\r|\n/g, "").replace(/([\da-fA-F]{2}) ?/g, "0x$1 ").replace(/ +$/, "").split(" "))));
-    }
-
-    var btoa = function (str) { return Buffer.from(str).toString('base64') }
-
-    var base64Encode = function (str) {
-        var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-        var out = "", i = 0, len = str.length, c1, c2, c3;
-        while (i < len) {
-            c1 = str.charCodeAt(i++) & 0xff;
-            if (i == len) {
-                out += CHARS.charAt(c1 >> 2);
-                out += CHARS.charAt((c1 & 0x3) << 4);
-                out += "==";
-                break;
-            }
-            c2 = str.charCodeAt(i++);
-            if (i == len) {
-                out += CHARS.charAt(c1 >> 2);
-                out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
-                out += CHARS.charAt((c2 & 0xF) << 2);
-                out += "=";
-                break;
-            }
-            c3 = str.charCodeAt(i++);
-            out += CHARS.charAt(c1 >> 2);
-            out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
-            out += CHARS.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
-            out += CHARS.charAt(c3 & 0x3F);
-        }
-        return out;
-    }
+    //
+    // var parse = function (img) {
+    //     var b = new Buffer(img, 'base64');
+    //     return b.toString();
+    // }
+    //
+    // var hexToBase64 = function (str) {
+    //     return Buffer.from((String.fromCharCode.apply(null, str.replace(/\r|\n/g, "").replace(/([\da-fA-F]{2}) ?/g, "0x$1 ").replace(/ +$/, "").split(" "))));
+    // }
+    //
+    // var btoa = function (str) {
+    //     return Buffer.from(str).toString('base64')
+    // }
+    //
+    // var base64Encode = function (str) {
+    //     var CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    //     var out = "", i = 0, len = str.length, c1, c2, c3;
+    //     while (i < len) {
+    //         c1 = str.charCodeAt(i++) & 0xff;
+    //         if (i == len) {
+    //             out += CHARS.charAt(c1 >> 2);
+    //             out += CHARS.charAt((c1 & 0x3) << 4);
+    //             out += "==";
+    //             break;
+    //         }
+    //         c2 = str.charCodeAt(i++);
+    //         if (i == len) {
+    //             out += CHARS.charAt(c1 >> 2);
+    //             out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+    //             out += CHARS.charAt((c2 & 0xF) << 2);
+    //             out += "=";
+    //             break;
+    //         }
+    //         c3 = str.charCodeAt(i++);
+    //         out += CHARS.charAt(c1 >> 2);
+    //         out += CHARS.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4));
+    //         out += CHARS.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6));
+    //         out += CHARS.charAt(c3 & 0x3F);
+    //     }
+    //     return out;
+    // }
 
 };
