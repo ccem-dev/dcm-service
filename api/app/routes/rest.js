@@ -35,11 +35,13 @@ module.exports = function (application) {
 
     application.post('/api/retinography', jsonParser, async function (req, res) {
         if (req.body.recruitmentNumber) {
-            service.doit(req.body.recruitmentNumber)
+            if(req.body.examName==='Retinography'){req.body.examName='XC'}
+            service.doit(req.body.recruitmentNumber,req.body.examName)
                 .then(data => {
                     res.status(200).send({
                         "data": data
                     })
+                    console.log(req.body);
                 });
         } else {
             res.status(400).send();
