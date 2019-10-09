@@ -18,10 +18,9 @@ function Retinography(jsonObject) {
     self.toJSON = toJSON;
 
     self.patientID = jsonObject.patientID;
+    // self.date = jsonObject.date;
     self.laterality = jsonObject.eye;
-    self.date = jsonObject.date;
     self.result = jsonObject.result;
-
 
     function toJSON() {
         let obj = {};

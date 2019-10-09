@@ -19,15 +19,15 @@ var DCM_HOST = '143.54.220.73';
 //http://localhost:8081/api/retinography
 // {"recruitmentNumber":"0002","examName":"Retinography","sending":0}
 
-var study = {};
 var rets = [];
+var study = {};
 var series = {
     'Date': [],
     'number': [],
     'Modality': [],
-    'UID': [],
+    'seriesUID': [],
     'PatientID': [],
-    'URL': [],
+    'seriesURL': [],
     'laterality': [],
     'numberOfInstancesInSeries': [],
     'instances': {}
@@ -36,41 +36,27 @@ var token = null;
 let AETS_NAME = 'DCM4CHEE';
 
 /*===============*/
+
 module.exports = {
     doit: doit
 };
 
 /*===============*/
 
-function doit(rn,en) {
+function doit(rn, en) {
     return generateWADO({'patientID': rn, 'modality': en})
         .then(data => {
-            // console.log(series);
             return [{
-                // id: 'retinography',
+                id: 'retinography',
                 date: "2019-09-09T17:40:34.699Z",   //study date
                 eye: 'left',                        //laterality
                 result: JSON.stringify(data[0])
             }]
         });
-
-    // [
-    // {
-    //     // id: 'retinography',
-    //     date: "2019-09-09T17:40:34.699Z", //study date
-    //     eye: 'left',        //laterality
-    //     result: JSON.stringify(data)
-    // },
-    //     {
-    //         // id: 'retinography',
-    //         date: "2019-09-09T17:40:34.699Z", //study date
-    //         eye: 'left',        //laterality
-    //         result: JSON.stringify(data)
-    //     }
-    // ]
 }
 
 /*==============*/
+
 function generateWADO(searchOptions) {
     return AuthenticationService.authenticate()
         .then((resultToken) => {
@@ -85,21 +71,25 @@ function generateWADO(searchOptions) {
             // console.log(retinographys);
             let arr = [];
 
-            // console.log('Instance Level:');
-            // for (s = 0; s < study.numberOfSeriesInStudy; s++) {
-            //     if (retinographys.Modality[s] === searchOptions.modality) {
-            //         var serie = {};
-            //         serie.URL = retinographys.URL[s];
-            //         serie.laterality = retinographys.laterality[s];
-            //         serie.numberOfInstancesInSeries = retinographys.numberOfInstancesInSeries[s];
-            //         serie.instances = retinographys.instances;
-            //         serie.number = retinographys.number[s];
-            //         arr.push(getInstanceInformation(serie))
-            //     }
-            // }
+            console.log('Instance Level:');
+            console.log();
+            for (s = 0; s < study.numberOfSeriesInStudy; s++) {
+                console.log('Series '+s);
+                if (retinographys[s].modality === searchOptions.modality) {
+                    console.log('Estive aqui');
+                    console.log();
+            //         var seriesLevelInformation = {};
+            //         seriesLevelInformation.URL = retinographys.URL[s];
+            //         seriesLevelInformation.laterality = retinographys.laterality[s];
+            //         seriesLevelInformation.numberOfInstancesInSeries = retinographys.numberOfInstancesInSeries[s];
+            //         seriesLevelInformation.instances = retinographys.instances;
+            //         seriesLevelInformation.number = retinographys.number[s];
+            //         arr.push(getInstanceInformation(seriesLevelInformation))
+                }
+            }
 
             retinographys.forEach(retin => {
-                console.log(retin);
+console.log(retin);
                 // arr.push(getInstanceInformation(retin))
             });
             return Promise.all(arr)
@@ -144,23 +134,18 @@ function getStudyInformation(searchOptions) {
                     study.PatientID = parsed[0][Constants.patientID].Value[0];
                     study.Date = parsed[0][Constants.studyDate].Value[0];
                     study.URL = parsed[0][Constants.studyURL].Value[0];
-                    study.numberOfSeriesInStudy = parsed[0][Constants.numberOfSeriesInStudy].Value[0];
                     study.UID = parsed[0][Constants.studyUID].Value[0];
-                    console.log();
-                    console.log('Study Level:');
-                    console.log('Patient ID: ' + study.PatientID);
-                    console.log('Last study UID: ' + study.UID);
-                    console.log('Study Date: ' + study.Date);
+                    study.numberOfSeriesInStudy = parsed[0][Constants.numberOfSeriesInStudy].Value[0];
+                    // console.log(); console.log('Study Level:'); console.log('Patient ID: ' + study.PatientID); console.log('Last study UID: ' + study.UID); console.log('Study Date: ' + study.Date);
                     resolve(study);
-                }else{
+                } else {
                     //TODO: enviar algum tipo de erro de mismatch do PatientID;
-                    console.log('ERROR: Patient ID mismatch, please review the requested recruitment number: <'+searchOptions.patientID+'> =/= <'+parsed[0]['00100020'].Value[0]+'>');
+                    console.log('ERROR: Patient ID mismatch, please review the requested recruitment number: <' + searchOptions.patientID + '> =/= <' + parsed[0]['00100020'].Value[0] + '>');
                 }
             }
         );
     });
 }
-
 
 function getSeriesInformation(study) {
     return new Promise((resolve, reject) => {
@@ -170,30 +155,28 @@ function getSeriesInformation(study) {
             qs: {
                 'orderby': 'SeriesNumber',
                 'includedefaults': 'false',
-                'includefield': '00080020,00080060,00081190,0020000E,00200011,00201209,00200060'
+                'includefield': 'Modality,RetrieveURL,SeriesInstanceUID,SeriesNumber,NumberOfSeriesRelatedInstances,Laterality'
             },
             headers: {'cache-control': 'no-cache', Authorization: 'Bearer ' + token}
         };
         request(seriesOptions, function (error, response, body) {
             if (error) throw new Error(error);
-            console.log('Number of series in study: ' + study.numberOfSeriesInStudy);
-            console.log();
-            console.log('Series Level:');
+            // console.log('Number of series in study: ' + study.numberOfSeriesInStudy); console.log(); console.log('Series Level:');
             let parsed = JSON.parse(body);
             for (var s = 0; s < study.numberOfSeriesInStudy; s++) {
                 let retinography = RetinographyFactory.create();
                 rets.push(retinography);
-                retinography.modality = parsed[s][Constants.modality].Value[0];                              //Modality
+                retinography.modality = parsed[s][Constants.modality].Value[0];                            //Modality
                 if (retinography.modality === 'XC') {
-                    retinography.date = study.Date;
+                    retinography.studyDate = study.Date;
                     retinography.patientID = study.PatientID;
 
-                    retinography.UID = parsed[s]['0020000E'].Value[0];                               //Series Instance UID
-                    retinography.number = parsed[s]['00200011'].Value[0];                            //Series Number
-                    retinography.numberOfInstancesInSeries = parsed[s]['00201209'].Value[0];         //Number of Series Related Instances
-                    retinography.URL = parsed[s]['00081190'].Value[0];                               //Retrieve URL
-                    retinography.laterality = parsed[s][Constants.laterality].Value[0];                        //Laterality
-                    console.log('Series number ' + retinography.number + ': ' + retinography.laterality + ', ' + retinography.UID);
+                    retinography.seriesUID = parsed[s][Constants.seriesUID].Value[0];                      //Series Instance UID
+                    retinography.seriesNumber = parsed[s][Constants.seriesNumber].Value[0];                            //Series Number
+                    retinography.numberOfInstancesInSeries = parsed[s][Constants.numberOfInstancesInSeries].Value[0];               //Number of Series Related Instances
+                    retinography.seriesURL = parsed[s][Constants.seriesURL].Value[0];                               //Retrieve URL
+                    retinography.laterality = parsed[s][Constants.laterality].Value[0];                    //Laterality
+                    // console.log('Series number ' + retinography.seriesNumber + ': ' + retinography.laterality + ', ' + retinography.seriesUID);
                 }
             }
             resolve(rets);
@@ -206,7 +189,7 @@ function getInstanceInformation(series) {
         var listOfInstances = [];
         var instanceOptions = {
             method: 'GET',
-            url: series.URL + '/instances',
+            url: seriesURL + '/instances',
             qs: {
                 'orderby': 'InstanceNumber',
                 'includedefaults': 'false',
