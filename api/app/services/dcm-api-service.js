@@ -2,7 +2,6 @@ const request = require('request');
 const https = require('https');
 const AuthenticationService = require('./AuthenticationService');
 const Constants = require('./Constants');
-const RetinographyFactory = require('./RetinographyFactory');
 
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
@@ -19,32 +18,27 @@ var DCM_HOST = '143.54.220.73';
 //http://localhost:8081/api/retinography
 // {"recruitmentNumber":"0002","examName":"Retinography","sending":0}
 
-var rets = [];
 var study = {};
 var token = null;
 let AETS_NAME = 'DCM4CHEE';
 
 /*===============*/
 
+
 module.exports = {
-    doit: doit
+    getStudyInformation: getStudyInformation,
+    getSeriesInformation: getSeriesInformation,
+    getInstanceInformation: getInstanceInformation,
+    requestImage: requestImage
 };
-
-/*===============*/
-
-function doit(rn, en) {
-    return generateWADO({'patientID': rn, 'modality': en})
-        .then(data => {
-            return data
-        });
-}
 
 /*==============*/
 
 function generateWADO(searchOptions) {
     return AuthenticationService.authenticate()
         .then((resultToken) => {
-            token = resultToken;
+            token = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIwaC1fYVhjZ1FsTlVfNlZScWY4X0wxaWNGYkY1TXJZSlF2Q0s4M3JZcko4In0.eyJqdGkiOiI3MzdlZjMwNS1lMWFiLTQzYjMtYjdmNC0zM2ZkNzgzMGZkZjkiLCJleHAiOjE1NzA3Mzc1MzIsIm5iZiI6MCwiaWF0IjoxNTcwNzM3MjMyLCJpc3MiOiJodHRwczovLzE0My41NC4yMjAuNzM6ODg0My9hdXRoL3JlYWxtcy9kY200Y2hlIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6ImRlY2RkYjA4LWQxMDQtNDU2Ny04ZWVlLWRmMWI4MTRhZGIwNCIsInR5cCI6IkJlYXJlciIsImF6cCI6ImN1cmwiLCJhdXRoX3RpbWUiOjAsInNlc3Npb25fc3RhdGUiOiJlZjZmMzgxOC1lODNhLTRlM2EtYjA0YS1hOTYwZWQ3NWNmNGQiLCJhY3IiOiIxIiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJ1c2VyIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJjbGllbnRJZCI6ImN1cmwiLCJjbGllbnRIb3N0IjoiMTQzLjU0LjIyMC43MyIsInByZWZlcnJlZF91c2VybmFtZSI6InNlcnZpY2UtYWNjb3VudC1jdXJsIiwiY2xpZW50QWRkcmVzcyI6IjE0My41NC4yMjAuNzMiLCJlbWFpbCI6InNlcnZpY2UtYWNjb3VudC1jdXJsQHBsYWNlaG9sZGVyLm9yZyJ9.bbgc1XbLAJcSO9RRxuQKDPtMb7rRcQYKe1I0Ab88OEuOsebh3nyt-O0H3dDIgQ7UxTne2KJGSNeRcoy9gUG-t3aKyI-0Icgqs01i0hBzg7B5_2OblYMJd9mUxWeZcV6V6SBOFTgJA4P8UdH8TvNKTA1aeSktTHnGec6z3ShifYLJGKflWRkzIzKISvGvu2Adv3jSbD5gA6UQzHLvYLpV3L2lCN2FvwquujacXbD7I8RrJ540VYhfX2bFsDVH_h5rGVYtsgGrnn7OTfqa4lcqhuaU89jldfbhx9cRFMPkTULTEEdmlcsoXVQGDpvXJpdTbLpNXs4SlcwMcOYyb51oLg";
+            // token = resultToken;
             return getStudyInformation(searchOptions)
         })
         .then((study) => {
@@ -69,20 +63,27 @@ function generateWADO(searchOptions) {
                 ret.instances.forEach(instance => {
                     let defer = requestImage(ret.seriesUID, instance);
                     arr.push(defer);
-                    defer.then(result => ret.result.push(result));
+                    defer.then(result => {
+                            ret.result.push(result)
+
+                        }
+                    );
 
                 });
             });
             return Promise.all(arr)
                 .then(result => {
-                    console.log('result');
-                    console.log(result);
+                    console.log(retinographys);
                     return retinographys;
                 })
         })
+        .catch(error => {
+            reject(error);
+
+        })
 }
 
-function getStudyInformation(searchOptions) {
+function getStudyInformation(token, searchOptions, qsOptions) {
     return new Promise((resolve, reject) => {
         var studyOptions = {
             method: 'GET',
@@ -90,32 +91,23 @@ function getStudyInformation(searchOptions) {
             qs: {
                 'PatientID': searchOptions.patientID,
                 'ModalitiesInStudy': searchOptions.modality,
-                'orderby': '-StudyDate,-StudyTime',
+                'orderby': 'StudyDate,StudyTime',
                 'includedefaults': 'false',
-                'includefield': 'StudyDate,RetrieveURL,StudyInstanceUID,NumberOfStudyRelatedSeries'
+                'includefield': 'StudyDate,RetrieveURL,StudyInstanceUID,NumberOfStudyRelatedSeries',
+                ...qsOptions
             },
             headers: {'cache-control': 'no-cache', Authorization: 'Bearer ' + token}
         };
         request(studyOptions, function (error, response, body) {
                 if (error) throw new Error(error);
                 let parsed = JSON.parse(body);
-                if (searchOptions.patientID === parsed[0][Constants.patientID].Value[0]) {
-                    study.PatientID = parsed[0][Constants.patientID].Value[0];
-                    study.Date = parsed[0][Constants.studyDate].Value[0];
-                    study.URL = parsed[0][Constants.studyURL].Value[0];
-                    study.UID = parsed[0][Constants.studyUID].Value[0];
-                    study.numberOfSeriesInStudy = parsed[0][Constants.numberOfSeriesInStudy].Value[0];
-                    resolve(study);
-                } else {
-                    //TODO: enviar algum tipo de erro de mismatch do PatientID;
-                    console.log('ERROR: Patient ID mismatch, please review the requested recruitment number: <' + searchOptions.patientID + '> =/= <' + parsed[0]['00100020'].Value[0] + '>');
-                }
+                resolve(parsed);
             }
         );
     });
 }
 
-function getSeriesInformation(study) {
+function getSeriesInformation(token, study) {
     return new Promise((resolve, reject) => {
         var seriesOptions = {
             url: study.URL + '/series',
@@ -129,18 +121,8 @@ function getSeriesInformation(study) {
         };
         request(seriesOptions, function (error, response, body) {
             if (error) throw new Error(error);
-
             let parsed = JSON.parse(body);
-
-            parsed.forEach(serie => {
-                if (serie[Constants.modality] && serie[Constants.modality].Value[0] === 'XC') { //todo is needed
-                    let created = RetinographyFactory.create(serie, study);
-                    console.log('created');
-                    console.log(created);
-                    rets.push(created);
-                }
-            });
-            resolve(rets);
+            resolve(parsed);
         });
     });
 }
@@ -153,20 +135,17 @@ function getInstanceInformation(retinography) {
             qs: {
                 'orderby': 'InstanceNumber',
                 'includedefaults': 'false',
-                'includefield': '00080018'
+                'includefield': Constants.InstanceUID
             },
             headers: {'cache-control': 'no-cache', Authorization: 'Bearer ' + token}
         };
         request(instanceOptions, function (error, response, body) {
             if (error) throw new Error(error);
             let parsedBody = JSON.parse(body);
-            console.log('The series number ' + retinography.seriesNumber + ' has ' + retinography.numberOfInstancesInSeries + ' instance(s): (' + retinography.laterality + ' eye)');
-
-            for (i = 0; i < retinography.numberOfInstancesInSeries; i++) {
-                retinography.instances.push(parsedBody[i]['00080018'].Value[0]);
-            }
-            console.log('=======study=============')
-            console.log(study);
+            // console.log('The series number ' + retinography.seriesNumber + ' has ' + retinography.numberOfInstancesInSeries + ' instance(s): (' + retinography.laterality + ' eye)');
+            parsedBody.forEach(instance => {
+                retinography.instances.push(instance[Constants.InstanceUID].Value[0]);
+            });
             resolve(retinography);
         });
     });

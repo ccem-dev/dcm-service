@@ -16,6 +16,9 @@ let constant = {
     seriesNumber:              '00200011', // Series​Number
     laterality:                '00200060', // Laterality    /*Só funciona para XC*/
     numberOfInstancesInSeries: '00201209', // Number​OfSeries​RelatedInstances
+
+    // Instance Level:
+    InstanceUID:               '00080018'  // SOPInstanceUID
 };
 
 module.exports = constant;
