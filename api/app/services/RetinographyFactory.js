@@ -18,7 +18,7 @@ function Retinography(jsonObject, study) {
     self.studyDate = study.Date;
     self.patientID = study.PatientID;
 
-    self.result = {};
+    self.result = [];
     self.instances = [];
     self.modality = jsonObject[Constants.modality].Value[0];
     self.seriesUID = jsonObject[Constants.seriesUID].Value[0];
@@ -32,7 +32,7 @@ function Retinography(jsonObject, study) {
     function toJSON() {
         let obj = {};
         obj.date = self.date;
-        obj.eye = self.laterality;
+        obj.eye = self.laterality === 'L' ? 'left' : 'right';
         obj.result = JSON.stringify(self.result);
         return obj;
     }

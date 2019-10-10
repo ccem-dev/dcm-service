@@ -35,12 +35,7 @@ module.exports = {
 function doit(rn, en) {
     return generateWADO({'patientID': rn, 'modality': en})
         .then(data => {
-            return [{
-                id: 'retinography',
-                date: "2019-09-09T17:40:34.699Z",   //study date
-                eye: 'left',                        //laterality
-                result: JSON.stringify(data[0])
-            }]
+            return data
         });
 }
 
@@ -72,14 +67,17 @@ function generateWADO(searchOptions) {
             retinographys.forEach(ret => {
                 console.log(ret);
                 ret.instances.forEach(instance => {
-                    arr.push(requestImage(ret.seriesUID, instance))
+                    let defer = requestImage(ret.seriesUID, instance);
+                    arr.push(defer);
+                    defer.then(result => ret.result.push(result));
+
                 });
             });
             return Promise.all(arr)
                 .then(result => {
-                    console.log('====result====');
-                    console.log(JSON.stringify(result));
-                    return result;
+                    console.log('result');
+                    console.log(result);
+                    return retinographys;
                 })
         })
 }
