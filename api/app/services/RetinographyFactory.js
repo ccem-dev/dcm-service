@@ -1,26 +1,33 @@
+const Constants = require('./Constants');
+
 var self = this;
 self.create = create;
-self.fromJson = fromJson;
 
 module.exports = self;
 
-function create() {
-    return new Retinography({});
+function create(serieObject, study) {
+    return new Retinography(serieObject, study);
 }
 
-function fromJson(jsonObject) {
-    return new Retinography(jsonObject);
-}
-
-function Retinography(jsonObject) {
+function Retinography(jsonObject, study) {
     var self = this;
 
     self.toJSON = toJSON;
 
-    self.patientID = jsonObject.patientID;
-    // self.date = jsonObject.date;
-    self.laterality = jsonObject.eye;
-    self.result = jsonObject.result;
+
+    self.studyDate = study.Date;
+    self.patientID = study.PatientID;
+
+    self.result = {};
+    self.instances = [];
+    self.modality = jsonObject[Constants.modality].Value[0];
+    self.seriesUID = jsonObject[Constants.seriesUID].Value[0];
+    self.seriesNumber = jsonObject[Constants.seriesNumber].Value[0];
+    self.numberOfInstancesInSeries = jsonObject[Constants.numberOfInstancesInSeries].Value[0];
+    self.seriesURL = jsonObject[Constants.seriesURL].Value[0];
+    self.laterality = jsonObject[Constants.laterality].Value[0];
+
+
 
     function toJSON() {
         let obj = {};

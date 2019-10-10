@@ -40,7 +40,7 @@ module.exports = function (application) {
                 .then(data => {
                     res.status(200).send({
                         "data": data
-                    })
+                    });
                     console.log(req.body);
                 });
         } else {
