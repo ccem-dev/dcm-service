@@ -15,9 +15,6 @@ function getRetinography(searchOptions) {
     if (!searchOptions.recruitmentNumber) {
         throw new Error('RN not informed');
     }
-    if (!!searchOptions.sending) {
-        searchOptions.sending = -1;
-    }
 
     searchOptions.modality = 'XC';
 
