@@ -1,7 +1,7 @@
 const request = require('request');
 const https = require('https');
 const AuthenticationService = require('./AuthenticationService');
-const Constants = require('./Constants');
+const Constants = require('../utils/DCMConstants');
 
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 
@@ -107,10 +107,10 @@ function getStudyInformation(token, searchOptions, qsOptions) {
     });
 }
 
-function getSeriesInformation(token, study) {
+function getSeriesInformation(token, studyURL) {
     return new Promise((resolve, reject) => {
         var seriesOptions = {
-            url: study.URL + '/series',
+            url: studyURL + '/series',
             method: 'GET',
             qs: {
                 'orderby': 'SeriesNumber',
@@ -127,11 +127,11 @@ function getSeriesInformation(token, study) {
     });
 }
 
-function getInstanceInformation(retinography) {
+function getInstanceInformation(token, seriesURL) {
     return new Promise((resolve, reject) => {
         var instanceOptions = {
             method: 'GET',
-            url: retinography.seriesURL + '/instances',
+            url: seriesURL + '/instances',
             qs: {
                 'orderby': 'InstanceNumber',
                 'includedefaults': 'false',
@@ -142,16 +142,12 @@ function getInstanceInformation(retinography) {
         request(instanceOptions, function (error, response, body) {
             if (error) throw new Error(error);
             let parsedBody = JSON.parse(body);
-            // console.log('The series number ' + retinography.seriesNumber + ' has ' + retinography.numberOfInstancesInSeries + ' instance(s): (' + retinography.laterality + ' eye)');
-            parsedBody.forEach(instance => {
-                retinography.instances.push(instance[Constants.InstanceUID].Value[0]);
-            });
-            resolve(retinography);
+            resolve(parsedBody);
         });
     });
 }
 
-function requestImage(seriesUID, instanceUID) {
+function requestImage(token, studyUID, seriesUID, instanceUID, qtOptions) {
     return new Promise((resolve, reject) => {
         const options = {
             method: 'GET',
@@ -160,12 +156,13 @@ function requestImage(seriesUID, instanceUID) {
             path: "/dcm4chee-arc/aets/" + AETS_NAME + "/wado?",
             qs: {
                 requestType: 'WADO',
-                studyUID: study.UID,
+                studyUID: studyUID,
                 seriesUID: seriesUID,
                 objectUID: instanceUID,
                 contentType: 'image/jpeg',
-                columns: '280',
-                frameNumber: '1'
+                columns: '280', //todo remove
+                frameNumber: '1',
+                ...qtOptions
             },
             headers: {
                 'Authorization': 'Bearer ' + token,

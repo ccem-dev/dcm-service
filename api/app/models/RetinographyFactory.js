@@ -1,4 +1,4 @@
-const Constants = require('./Constants');
+const Constants = require('../utils/DCMConstants');
 
 var self = this;
 self.create = create;
@@ -6,17 +6,22 @@ self.create = create;
 module.exports = self;
 
 function create(serieObject, study) {
-    return new Retinography(serieObject, study);
+    if (serieObject[Constants.modality] && serieObject[Constants.modality].Value[0] === 'XC') {
+        return new Retinography(serieObject, study);
+    }
 }
 
 function Retinography(jsonObject, study) {
     var self = this;
 
+    self.addInstance = addInstance;
+    self.setInstances = setInstances;
+    self.addResult = addResult;
     self.toJSON = toJSON;
 
 
-    self.studyDate = study.Date;
-    self.patientID = study.PatientID;
+    self.studyDate = study.date;
+    self.patientID = study.patientID;
     self.studyUID = study.UID;
 
     self.result = [];
@@ -29,6 +34,19 @@ function Retinography(jsonObject, study) {
     self.laterality = jsonObject[Constants.laterality].Value[0];
 
 
+    function addInstance(instanceObj) {
+        self.instances.push(instanceObj[Constants.InstanceUID].Value[0]);
+    }
+
+    function setInstances(instanceObjs) {
+        instanceObjs.forEach(instanceObj => self.instances.push(instanceObj[Constants.InstanceUID].Value[0]));
+    }
+
+    function addResult(result) {
+        if (result) {
+            self.result.push(result);
+        }
+    }
 
     function toJSON() {
         let obj = {};

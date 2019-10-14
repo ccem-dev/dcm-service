@@ -1,6 +1,6 @@
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
-var facade = require('../services/facade.js');
+var facade = require('../controllers/RetinographyFacade.js');
 
 module.exports = function (application) {
     const controller = application.app.controllers.AppController;
@@ -28,6 +28,7 @@ module.exports = function (application) {
         try {
             facade.getRetinography(req.body)
                 .then(data => {
+                    console.log(data);
                     res.status(200).send({
                         "data": data
                     });
@@ -35,10 +36,5 @@ module.exports = function (application) {
         } catch (e) {
             res.status(400).send(e);
         }
-    });
-
-    application.post('/', jsonParser, function (req, res) {
-        //TODO: call controller
-        res.status(200).send({})
     });
 };
