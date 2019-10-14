@@ -1,6 +1,6 @@
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
-var facade = require('../controllers/RetinographyFacade.js');
+var facade = require('../services/RetinographyService.js');
 
 module.exports = function (application) {
     const controller = application.app.controllers.AppController;

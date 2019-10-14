@@ -1,7 +1,13 @@
-const DcmApiService = require('./dcm-api-service.js');
+const DcmApiService = require('./DCMApiService.js');
 const Constants = require('../utils/DCMConstants');
 const StudyFactory = require('../models/StudyFactory')
 
+/*===============*/
+module.exports = {
+    getStudyInformation: getStudyInformation
+};
+
+/*===============*/
 
 function getStudyInformation(token, searchOptions) {
     var qs = {};
@@ -38,7 +44,3 @@ function getStudyInformation(token, searchOptions) {
         })
 
 }
-
-module.exports = {
-    getStudyInformation: getStudyInformation
-};

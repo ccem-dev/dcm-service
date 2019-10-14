@@ -1,11 +1,7 @@
-const StudyService = require('../services/study-service');
-const DcmApiService = require('../services/dcm-api-service.js');
+const StudyService = require('./StudyService');
+const DcmApiService = require('./DCMApiService.js');
 const RetinographyFactory = require('../models/RetinographyFactory');
-const AuthenticationService = require('../services/AuthenticationService');
-const Constants = require('../utils/DCMConstants');
-
-var self = this;
-
+const AuthenticationService = require('./AuthenticationService');
 
 module.exports = {
     getRetinography: getRetinography
