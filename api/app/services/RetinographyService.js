@@ -16,14 +16,10 @@ function getRetinography(searchOptions) {
 
     let token;
 
-    return AuthenticationService.authenticate()
-        .then((authToken) => {
-            token = authToken;
-            return StudyService.getStudyInformation(token, searchOptions);
-        })
+    return authenticate()
         .then(study => {
-            return DcmApiService.getSeriesInformation(token, study.URL)
-                .then(series => series.map(serie => RetinographyFactory.create(serie, study)));
+            //todo test if rn not found
+            return fetchRetinographies(serie, study)
         })
         .then(retinographies => {
             return Promise.all(retinographies.map(retinography => {
@@ -42,4 +38,16 @@ function getRetinography(searchOptions) {
             console.log(err);
         });
 
+    function authenticate() {
+        return AuthenticationService.authenticate()
+            .then((authToken) => {
+                token = authToken;
+                return StudyService.getStudyInformation(token, searchOptions);
+            });
+    }
+
+    function fetchRetinographies(serie, study) {
+        return DcmApiService.getSeriesInformation(token, study.URL)
+            .then(series => series.map(serie => RetinographyFactory.create(serie, study)));
+    }
 }
