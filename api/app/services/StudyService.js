@@ -28,7 +28,7 @@ function getStudyInformation(token, searchOptions) {
     return DcmApiService
         .getStudyInformation(token, searchOptions, qs)
         .then(studies => {
-            if (targetIndex > studies.length) {
+            if (targetIndex >= studies.length) {
                 targetIndex = studies.length - 1;
             }
             let targetStudy = studies[targetIndex];
