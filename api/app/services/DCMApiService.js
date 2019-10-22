@@ -4,20 +4,17 @@ const AuthenticationService = require('./AuthenticationService');
 const Constants = require('../utils/DCMConstants');
 
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+const {
+    ARC_PORT,
+    DCM_HOST,
+    AETS_NAME
+} = process.env;
 
-var ARC_PORT = '8443';
-// var ARC_PORT = process.env['ARC_PORT'];
+var arc_port = ARC_PORT || '8443';
 
-var DCM_HOST = '143.54.220.73';
-// var DCM_HOST = process.env['DCM_HOST'];
+var dcm_host = DCM_HOST ||'143.54.220.73';
 
-let AETS_NAME = 'DCM4CHEE';
-// var searchOptions = {'patientID': '0002', 'modality': 'XC'};
-// var searchOptions = {'patientID': '1941139', 'modality': 'US'};
-
-// Variáveis no Postman para testes (Body): (Pode deletar)
-//http://localhost:8081/api/retinography
-// {"recruitmentNumber":"0002","examName":"Retinography","sending":0}
+let aets_name = AETS_NAME || 'DCM4CHEE';
 
 
 /*===============*/
@@ -33,7 +30,7 @@ function getStudyInformation(token, searchOptions, qsOptions) {
     return new Promise((resolve, reject) => {
         var studyOptions = {
             method: 'GET',
-            url: 'https://' + DCM_HOST + ':' + ARC_PORT + '/dcm4chee-arc/aets/' + AETS_NAME + '/rs/studies',
+            url: 'https://' + dcm_host + ':' + arc_port + '/dcm4chee-arc/aets/' + aets_name + '/rs/studies',
             qs: {
                 'PatientID': searchOptions.patientID,
                 'ModalitiesInStudy': searchOptions.modality,
@@ -97,9 +94,9 @@ function requestImage(token, studyUID, seriesUID, instanceUID, qtOptions) {
     return new Promise((resolve, reject) => {
         const options = {
             method: 'GET',
-            hostname: DCM_HOST,
-            port: ARC_PORT,
-            path: "/dcm4chee-arc/aets/" + AETS_NAME + "/wado?",
+            hostname: dcm_host,
+            port: arc_port,
+            path: "/dcm4chee-arc/aets/" + aets_name + "/wado?",
             qs: {
                 requestType: 'WADO',
                 studyUID: studyUID,

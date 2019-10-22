@@ -3,8 +3,6 @@ var jsonParser = bodyParser.json();
 var facade = require('../services/RetinographyService.js');
 
 module.exports = function (application) {
-    const controller = application.app.controllers.AppController;
-
     application.all('*', function (req, response, next) {
         response.header('Access-Control-Allow-Credentials', true);
         response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -24,6 +22,8 @@ module.exports = function (application) {
         res.status(200).send({})
     });
 
+    // Example
+    // {"recruitmentNumber":"0002","sending":0}
     application.post('/api/retinography', jsonParser, async function (req, res) {
         try {
             facade.getRetinography(req.body)
