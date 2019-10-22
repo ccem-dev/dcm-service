@@ -3,3 +3,5 @@
 **/.idea/
 persistence/
 **.swp
+**/source/node_modules
+**/package-lock.json

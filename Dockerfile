@@ -1,18 +1,4 @@
 FROM node:10.16.0-alpine AS api
-RUN apk upgrade --update && apk add \
-            libpng  \
-            libpng-dev \
-            bzip2 \
-            g++ \
-            gcc \
-            gnupg \
-            libgcc \
-            make \
-            autoconf \
-            automake \
-            libtool \
-            nasm && \
-            rm /var/cache/apk/*
 COPY source/. src/
 WORKDIR /src
 ENV MEMORY 2048
