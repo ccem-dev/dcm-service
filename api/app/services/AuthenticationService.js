@@ -1,16 +1,20 @@
 const request = require('request');
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+
+var { //todo change for const
+    DCM_HOST,
+    KEYCLOAK_PORT,
+    CURL_SECRET
+} = process.env;
 
 // Host IP
-var DCM_HOST = '143.54.220.73';
-// var DCM_HOST = process.env['DCM_HOST'];
+DCM_HOST = '143.54.220.73';
 
 // Keycloak port:
-var KEYCLOAK_PORT = '8843';
-// var KEYCLOAK_PORT = process.env['KEYCLOAK_PORT'];
+KEYCLOAK_PORT = '8843';
 
-var CURL_SECRET = '5a7def58-df35-412a-94fa-1d1fdf0f6000';
-// var CURL_SECRET = process.env['CURL_SECRET'];
+//Curl secret
+// CURL_SECRET = '5a7def58-df35-412a-94fa-1d1fdf0f6000A';
+CURL_SECRET = '5a7def58-df35-412a-94fa-1d1fdf0f6000';
 
 
 var self = this;
@@ -29,9 +33,15 @@ function authenticate() {
             headers: {'cache-control': 'no-cache'}
         };
         request(options, function (error, response, body) {
-            if (error) throw new Error(error);
-            let token = JSON.parse(body).access_token;
-            resolve(token);
+            if (error) {
+                reject(error);
+            }
+            if (response.statusCode === 200) {
+                let token = JSON.parse(body).access_token;
+                resolve(token);
+            } else {
+                reject('Authorization error');
+            }
         });
     });
 }

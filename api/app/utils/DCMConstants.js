@@ -18,7 +18,10 @@ let constant = {
     numberOfInstancesInSeries: '00201209', // Number​OfSeries​RelatedInstances
 
     // Instance Level:
-    InstanceUID:               '00080018'  // SOPInstanceUID
+    InstanceUID:               '00080018',  // SOPInstanceUID
+
+    //Modalities
+    RetinographyModality: 'XC'
 };
 
 module.exports = constant;

@@ -21,4 +21,3 @@ function Study(studyObj) {
 
     return self;
 }
-

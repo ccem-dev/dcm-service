@@ -1,6 +1,5 @@
 const request = require('request');
 const https = require('https');
-const AuthenticationService = require('./AuthenticationService');
 const Constants = require('../utils/DCMConstants');
 
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
@@ -12,7 +11,7 @@ const {
 
 var arc_port = ARC_PORT || '8443';
 
-var dcm_host = DCM_HOST ||'143.54.220.73';
+var dcm_host = DCM_HOST || '143.54.220.73';
 
 let aets_name = AETS_NAME || 'DCM4CHEE';
 
@@ -24,6 +23,7 @@ module.exports = {
     getInstanceInformation: getInstanceInformation,
     requestImage: requestImage
 };
+
 /*==============*/
 
 function getStudyInformation(token, searchOptions, qsOptions) {
@@ -42,9 +42,21 @@ function getStudyInformation(token, searchOptions, qsOptions) {
             headers: {'cache-control': 'no-cache', Authorization: 'Bearer ' + token}
         };
         request(studyOptions, function (error, response, body) {
-                if (error) throw new Error(error);
-                let parsed = JSON.parse(body);
-                resolve(parsed);
+                try {
+                    if (error) {
+                        reject(error);
+                    }
+                    if (response.statusCode === 200) {
+                        let parsed = JSON.parse(body);
+                        resolve(parsed);
+                    } else if (response.statusCode === 204) {
+                        reject('Study not found');
+                    } else {
+                        reject('study error');
+                    }
+                } catch (e) {
+                    reject(e);
+                }
             }
         );
     });
@@ -90,7 +102,7 @@ function getInstanceInformation(token, seriesURL) {
     });
 }
 
-function requestImage(token, studyUID, seriesUID, instanceUID, qtOptions) {
+function requestImage(token, studyUID, seriesUID, instanceUID, qsOptions) {
     return new Promise((resolve, reject) => {
         const options = {
             method: 'GET',
@@ -103,9 +115,9 @@ function requestImage(token, studyUID, seriesUID, instanceUID, qtOptions) {
                 seriesUID: seriesUID,
                 objectUID: instanceUID,
                 contentType: 'image/jpeg',
-                columns: '280', //todo remove
+                columns: '280',
                 frameNumber: '1',
-                ...qtOptions
+                ...qsOptions
             },
             headers: {
                 'Authorization': 'Bearer ' + token,

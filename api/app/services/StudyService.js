@@ -12,7 +12,7 @@ module.exports = {
 function getStudyInformation(token, searchOptions) {
     var qs = {};
 
-    searchOptions.patientID = searchOptions.recruitmentNumber;
+
     let sending = (searchOptions.sending === undefined || searchOptions.sending === null) ? -1 : searchOptions.sending;
 
     let targetIndex = sending;
@@ -33,11 +33,8 @@ function getStudyInformation(token, searchOptions) {
             }
             let targetStudy = studies[targetIndex];
             let study = StudyFactory.create(targetStudy);
-            console.log(study);
             if (searchOptions.patientID !== study.patientID) {
-                //     TODO: enviar algum tipo de erro de mismatch do PatientID;
-                //     TODO: tratar erro quando "sending" > numberOfSeriesInStudy;
-                console.log('ERROR: Patient ID mismatch, please review the requested recruitment number: <' + searchOptions.patientID + '> =/= <' + study.patientID + '>');
+                return Promise.reject('Study not found');
             }
             return study;
 

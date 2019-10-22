@@ -26,3 +26,10 @@ module.exports.notFound = function (body) {
   return err;
 };
 
+module.exports.badRequest = function (body) {
+  let err = {};
+  err.code = 400;
+  err.body = {data: body || {message: "Malformed parameters"}};
+  return err;
+};
+
