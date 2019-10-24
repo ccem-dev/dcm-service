@@ -8,7 +8,7 @@
   "description": "Node api for dcm-service",
   "main": "app.js",
   "scripts": {
-    "test": "nyc --reporter=html --reporter=text mocha",
+    "test": "nyc --reporter=html --reporter=text mocha --recursive",
     "unit": "mocha test/**/*.js",
     "dev": "node --max-old-space-size=1024 --optimize-for-size app.js",
     "gulp": "gulp",
