@@ -6,7 +6,9 @@ const Response = require('../utils/Response');
 
 
 module.exports = {
-    getRetinography: getRetinography
+    getRetinography: getRetinography,
+    validateAndFormatSearchOptions: validateAndFormatSearchOptions,
+    errorHandler: errorHandler
 };
 
 function getRetinography(searchOptions) {

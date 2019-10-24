@@ -9,10 +9,10 @@ describe('StudyService.js Tests', function () {
     beforeEach(function () {
         mocks();
 
-        Injections.DcmApiService = require("../app/services/DCMApiService");
-        Injections.StudyFactory = require("../app/models/StudyFactory");
+        Injections.DcmApiService = require("../../app/services/DCMApiService");
+        Injections.StudyFactory = require("../../app/models/StudyFactory");
 
-        service = require("../app/services/StudyService");
+        service = require("../../app/services/StudyService");
         assert = require("assert");
 
     });
