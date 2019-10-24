@@ -22,7 +22,7 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>0/22</span>
+        <span class='fraction'>0/15</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -32,12 +32,12 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>0/6</span>
+        <span class='fraction'>0/5</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>0/22</span>
+        <span class='fraction'>0/15</span>
       </div>
     </div>
     <p class="quiet">
@@ -74,22 +74,7 @@
 <a name='L26'></a><a href='#L26'>26</a>
 <a name='L27'></a><a href='#L27'>27</a>
 <a name='L28'></a><a href='#L28'>28</a>
-<a name='L29'></a><a href='#L29'>29</a>
-<a name='L30'></a><a href='#L30'>30</a>
-<a name='L31'></a><a href='#L31'>31</a>
-<a name='L32'></a><a href='#L32'>32</a>
-<a name='L33'></a><a href='#L33'>33</a>
-<a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a>
-<a name='L36'></a><a href='#L36'>36</a>
-<a name='L37'></a><a href='#L37'>37</a>
-<a name='L38'></a><a href='#L38'>38</a>
-<a name='L39'></a><a href='#L39'>39</a>
-<a name='L40'></a><a href='#L40'>40</a>
-<a name='L41'></a><a href='#L41'>41</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L29'></a><a href='#L29'>29</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -100,23 +85,14 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -128,11 +104,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var bodyParser = <span class="cstat-no" title="statement not covered" >require('body-parser');</span>
 var jsonParser = <span class="cstat-no" title="statement not covered" >bodyParser.json();</span>
-var facade = <span class="cstat-no" title="statement not covered" >require('../services/RetinographyService.js');</span>
+var Facade = <span class="cstat-no" title="statement not covered" >require('../controllers/Facade.js');</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >module.exports = <span class="fstat-no" title="function not covered" >fu</span>nction (application) {</span>
-    const controller = <span class="cstat-no" title="statement not covered" >application.app.controllers.AppController;</span>
-&nbsp;
 <span class="cstat-no" title="statement not covered" >    application.all('*', <span class="fstat-no" title="function not covered" >fu</span>nction (req, response, next) {</span>
 <span class="cstat-no" title="statement not covered" >        response.header('Access-Control-Allow-Credentials', true);</span>
 <span class="cstat-no" title="statement not covered" >        response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");</span>
@@ -142,37 +116,27 @@ var facade = <span class="cstat-no" title="statement not covered" >require('../s
 <span class="cstat-no" title="statement not covered" >        next();</span>
     });
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    application.put('/', jsonParser, <span class="fstat-no" title="function not covered" >as</span>ync function (req, res) {</span>
-        //TODO: call controller
-<span class="cstat-no" title="statement not covered" >        res.status(200).send({})</span>
-    });
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    application.delete('/', <span class="fstat-no" title="function not covered" >as</span>ync function (req, res) {</span>
-        //TODO: call controller
-<span class="cstat-no" title="statement not covered" >        res.status(200).send({})</span>
-    });
-&nbsp;
+    // Example
+    // {"recruitmentNumber":"0002","sending":0}
 <span class="cstat-no" title="statement not covered" >    application.post('/api/retinography', jsonParser, <span class="fstat-no" title="function not covered" >as</span>ync function (req, res) {</span>
-<span class="cstat-no" title="statement not covered" >        try {</span>
-<span class="cstat-no" title="statement not covered" >            facade.getRetinography(req.body)</span>
-                .then(<span class="fstat-no" title="function not covered" >da</span>ta =&gt; {
-<span class="cstat-no" title="statement not covered" >                    console.log(data);</span>
-<span class="cstat-no" title="statement not covered" >                    res.status(200).send({</span>
-                        "data": data
-                    });
+<span class="cstat-no" title="statement not covered" >        Facade.getRetinography(req.body)</span>
+            .then(<span class="fstat-no" title="function not covered" >da</span>ta =&gt; {
+<span class="cstat-no" title="statement not covered" >                res.status(200).send({</span>
+                    "data": data
                 });
-        } catch (e) {
-<span class="cstat-no" title="statement not covered" >            res.status(400).send(e);</span>
-        }
+            })
+            .catch(<span class="fstat-no" title="function not covered" >e </span>=&gt; {
+<span class="cstat-no" title="statement not covered" >                res.status(e.code).send(e);</span>
+            });
+&nbsp;
     });
-};
-&nbsp;</pre></td></tr>
+};</pre></td></tr>
 </table></pre>
 <div class='push'></div><!-- for sticky footer -->
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Wed Oct 16 2019 16:45:40 GMT-0300 (-03)
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Thu Oct 24 2019 10:50:56 GMT-0300 (-03)
 </div>
 </div>
 <script src="../prettify.js"></script>

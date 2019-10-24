@@ -15,6 +15,8 @@ describe('StudyService.js Tests', function () {
         service = require("../../app/services/StudyService");
         assert = require("assert");
 
+        sinon.stub(Injections.DcmApiService, "getStudyInformation").returns(Promise.resolve([Mock.studyWithWrongID]));
+        sinon.stub(Injections.StudyFactory, 'create').returns(Mock.studyWithWrongID);
     });
 
     afterEach(function () {
@@ -22,12 +24,6 @@ describe('StudyService.js Tests', function () {
     });
 
     it('should return a Study not found message', function () {
-        let studyWithWrongID = {patientID:40000};
-
-        sinon.restore();
-        sinon.stub(Injections.DcmApiService, "getStudyInformation").returns(Promise.resolve([studyWithWrongID]));
-        sinon.stub(Injections.StudyFactory, 'create').returns(studyWithWrongID);
-
         service.getStudyInformation(Mock.token, Mock.searchOptions)
             .catch(err => {
                 expect(err).to.eql('Study not found')
@@ -72,6 +68,7 @@ describe('StudyService.js Tests', function () {
     });
 
     function mocks() {
+        Mock.studyWithWrongID = {patientID:40000};
         Mock.study = {
             patientID: 5007001
         };

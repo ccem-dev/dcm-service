@@ -3,3 +3,8 @@
 **/.idea/
 persistence/
 api/node_modules
+.nyc_output/
+**/.nyc_output/
+./coverage
+**/./coverage
+

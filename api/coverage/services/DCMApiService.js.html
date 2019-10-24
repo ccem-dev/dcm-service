@@ -20,14 +20,14 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">21.43% </span>
+        <span class="strong">18.75% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>9/42</span>
+        <span class='fraction'>9/48</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">37.5% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>0/6</span>
+        <span class='fraction'>6/16</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>0/15</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">23.08% </span>
+        <span class="strong">19.57% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>9/39</span>
+        <span class='fraction'>9/46</span>
       </div>
     </div>
     <p class="quiet">
@@ -180,30 +180,36 @@
 <a name='L132'></a><a href='#L132'>132</a>
 <a name='L133'></a><a href='#L133'>133</a>
 <a name='L134'></a><a href='#L134'>134</a>
-<a name='L135'></a><a href='#L135'>135</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -230,6 +236,18 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -316,24 +334,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const request = require('request');
 const https = require('https');
-const AuthenticationService = require('./AuthenticationService');
 const Constants = require('../utils/DCMConstants');
 &nbsp;
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+const {
+    ARC_PORT,
+    DCM_HOST,
+    AETS_NAME
+} = process.env;
 &nbsp;
-var ARC_PORT = '8443';
-// var ARC_PORT = process.env['ARC_PORT'];
+var arc_port = ARC_PORT || '8443';
 &nbsp;
-var DCM_HOST = '143.54.220.73';
-// var DCM_HOST = process.env['DCM_HOST'];
+var dcm_host = DCM_HOST || '143.54.220.73';
 &nbsp;
-let AETS_NAME = 'DCM4CHEE';
-// var searchOptions = {'patientID': '0002', 'modality': 'XC'};
-// var searchOptions = {'patientID': '1941139', 'modality': 'US'};
-&nbsp;
-// Variáveis no Postman para testes (Body): (Pode deletar)
-//http://localhost:8081/api/retinography
-// {"recruitmentNumber":"0002","examName":"Retinography","sending":0}
+let aets_name = AETS_NAME || 'DCM4CHEE';
 &nbsp;
 &nbsp;
 /*===============*/
@@ -343,13 +357,14 @@ module.exports = {
     getInstanceInformation: getInstanceInformation,
     requestImage: requestImage
 };
+&nbsp;
 /*==============*/
 &nbsp;
 function <span class="fstat-no" title="function not covered" >getStudyInformation(</span>token, searchOptions, qsOptions) {
 <span class="cstat-no" title="statement not covered" >    return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
         var studyOptions = <span class="cstat-no" title="statement not covered" >{</span>
             method: 'GET',
-            url: 'https://' + DCM_HOST + ':' + ARC_PORT + '/dcm4chee-arc/aets/' + AETS_NAME + '/rs/studies',
+            url: 'https://' + dcm_host + ':' + arc_port + '/dcm4chee-arc/aets/' + aets_name + '/rs/studies',
             qs: {
                 'PatientID': searchOptions.patientID,
                 'ModalitiesInStudy': searchOptions.modality,
@@ -361,9 +376,21 @@ function <span class="fstat-no" title="function not covered" >getStudyInformatio
             headers: {'cache-control': 'no-cache', Authorization: 'Bearer ' + token}
         };
 <span class="cstat-no" title="statement not covered" >        request(studyOptions, <span class="fstat-no" title="function not covered" >fu</span>nction (error, response, body) {</span>
-<span class="cstat-no" title="statement not covered" >                if (error) <span class="cstat-no" title="statement not covered" >throw new Error(error);</span></span>
-                let parsed = <span class="cstat-no" title="statement not covered" >JSON.parse(body);</span>
-<span class="cstat-no" title="statement not covered" >                resolve(parsed);</span>
+<span class="cstat-no" title="statement not covered" >                try {</span>
+<span class="cstat-no" title="statement not covered" >                    if (error) {</span>
+<span class="cstat-no" title="statement not covered" >                        reject(error);</span>
+                    }
+<span class="cstat-no" title="statement not covered" >                    if (response.statusCode === 200) {</span>
+                        let parsed = <span class="cstat-no" title="statement not covered" >JSON.parse(body);</span>
+<span class="cstat-no" title="statement not covered" >                        resolve(parsed);</span>
+                    } else <span class="cstat-no" title="statement not covered" >if (response.statusCode === 204) {</span>
+<span class="cstat-no" title="statement not covered" >                        reject('Study not found');</span>
+                    } else {
+<span class="cstat-no" title="statement not covered" >                        reject('study error');</span>
+                    }
+                } catch (e) {
+<span class="cstat-no" title="statement not covered" >                    reject(e);</span>
+                }
             }
         );
     });
@@ -409,22 +436,22 @@ function <span class="fstat-no" title="function not covered" >getInstanceInforma
     });
 }
 &nbsp;
-function <span class="fstat-no" title="function not covered" >requestImage(</span>token, studyUID, seriesUID, instanceUID, qtOptions) {
+function <span class="fstat-no" title="function not covered" >requestImage(</span>token, studyUID, seriesUID, instanceUID, qsOptions) {
 <span class="cstat-no" title="statement not covered" >    return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
         const options = <span class="cstat-no" title="statement not covered" >{</span>
             method: 'GET',
-            hostname: DCM_HOST,
-            port: ARC_PORT,
-            path: "/dcm4chee-arc/aets/" + AETS_NAME + "/wado?",
+            hostname: dcm_host,
+            port: arc_port,
+            path: "/dcm4chee-arc/aets/" + aets_name + "/wado?",
             qs: {
                 requestType: 'WADO',
                 studyUID: studyUID,
                 seriesUID: seriesUID,
                 objectUID: instanceUID,
                 contentType: 'image/jpeg',
-                columns: '280', //todo remove
+                columns: '280',
                 frameNumber: '1',
-                ...qtOptions
+                ...qsOptions
             },
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -454,7 +481,7 @@ function <span class="fstat-no" title="function not covered" >requestImage(</spa
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Wed Oct 16 2019 16:45:40 GMT-0300 (-03)
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Thu Oct 24 2019 10:50:56 GMT-0300 (-03)
 </div>
 </div>
 <script src="../prettify.js"></script>
