@@ -55,4 +55,16 @@ describe('Response.js Tests', function () {
         assert.equal(valueDefault.code,404);
         assert.deepEqual(valueDefault.body.data,bodyDefault);
     });
+
+    it('should badRequest response', function () {
+        let body = {teste:null};
+        let bodyDefault = {message: "Malformed parameters"};
+        let valueCustom = app.badRequest(body);
+        assert.equal(valueCustom.code,400);
+        assert.equal(valueCustom.body.data,body);
+
+        let valueDefault = app.badRequest();
+        assert.equal(valueDefault.code,400);
+        assert.deepEqual(valueDefault.body.data,bodyDefault);
+    });
 });
