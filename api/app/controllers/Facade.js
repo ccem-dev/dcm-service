@@ -68,37 +68,3 @@ function validateAndFormatSearchOptions(searchOptions) {
     }
 
 }
-
-/* todo:  \/ excluir \/  */
-
-// cases();
-
-function cases() {
-    let so1 = [
-        {recruitmentNumber: '0001', sending: '1'},
-        {recruitmentNumber: '0001', sending: 1},
-        {recruitmentNumber: '0001', sending: 0},
-        {recruitmentNumber: 'asd', sending: '01'},
-        //====== errors
-        {recruitmentNumber: '0001', sending: 'onze'},
-        {recruitmentNumber: '0001', sending: NaN},
-        {recruitmentNumber: '0001', sending: undefined},
-        {recruitmentNumber: '0001', sending: null},
-        {sending: '0'},
-        {recruitmentNumber: '0001'}
-    ];
-
-    let errorCounter = 0;
-    so1.forEach((so, ix) => {
-        try {
-            validateAndFormatSearchOptions(so);
-            console.log(so)
-        } catch (e) {
-            errorCounter++;
-            // console.log(ix, so);
-            // console.log(e);
-        }
-    });
-
-    console.log('error counter = ', errorCounter)
-}
