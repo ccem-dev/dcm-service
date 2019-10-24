@@ -8,12 +8,15 @@ module.exports = {
 };
 
 function getRetinography(token, study) {
-    return fetchRetinographies(study)
-        .then(retinographies => processInstances(retinographies))
-        .catch(err => {
-            console.log('err');
-            console.log(err);
-        });
+    try {
+        return fetchRetinographies(study)
+            .then(retinographies => processInstances(retinographies))
+            .catch(err => {
+                return Promise.reject(err);
+            });
+    } catch (e) {
+        return Promise.reject(e);
+    }
 
     function processInstances(retinographies) {
         return Promise.all(retinographies.map(retinography => {
