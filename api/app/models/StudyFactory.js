@@ -1,9 +1,11 @@
 const Constants = require('../utils/DCMConstants');
 
-var self = this;
-self.create = create;
+/*===============*/
+module.exports = {
+    create: create
+};
 
-module.exports = self;
+/*===============*/
 
 function create(studyObj) {
     return new Study(studyObj);

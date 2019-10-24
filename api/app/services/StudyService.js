@@ -1,5 +1,4 @@
 const DcmApiService = require('./DCMApiService.js');
-const Constants = require('../utils/DCMConstants');
 const StudyFactory = require('../models/StudyFactory')
 
 /*===============*/

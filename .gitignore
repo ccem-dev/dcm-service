@@ -2,3 +2,4 @@
 .vscode/
 **/.idea/
 persistence/
+api/node_modules
