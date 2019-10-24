@@ -5,3 +5,7 @@ persistence/
 **.swp
 **/source/node_modules
 **/package-lock.json
+**/.terraform
+**/*.nyc_output
+terraform.tfstate*
+source/coverage

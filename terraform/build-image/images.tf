@@ -18,11 +18,15 @@ variable "dcm-service-source" {
 }
 
 variable "dcm-service-npminstall" {
-  default = "npm install --production"
+  default = "npm install"
 }
 
 variable "dcm-service-npmtest" {
   default = "npm test"
+}
+
+variable "dcm-service-npmprune" {
+  default = "npm prune --production"
 }
 
 ###############################################
@@ -43,8 +47,16 @@ resource "null_resource" "dcm-service-test" {
   }
 }
 
-resource "null_resource" "dcm-service" {
+resource "null_resource" "dcm-service-prune" {
   depends_on = [null_resource.dcm-service-test]
+  provisioner "local-exec" {
+    working_dir = "${var.dcm-service-source}"
+    command = "${var.dcm-service-npmprune}"
+  }
+}
+
+resource "null_resource" "dcm-service" {
+  depends_on = [null_resource.dcm-service-prune]
   provisioner "local-exec" {
     command = "docker build -t ${var.dcm-service-name} ${var.dcm-service-dockerfile}"
   }
