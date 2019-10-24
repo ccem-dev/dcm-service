@@ -1,4 +1,4 @@
-describe('StudyService.js Tests', function () {
+describe('Facade.js Tests', function () {
     const AuthenticationService = require('../../app/services/AuthenticationService');
     const RetinographyService = require('../../app/services/RetinographyService');
     const StudyService = require('../../app/services/StudyService');
