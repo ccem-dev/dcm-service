@@ -62,28 +62,6 @@ describe('Facade.js Tests', function () {
         });
     });
 
-    xdescribe('the getRetinography method', function () {
-        it('should set modality to XC', function () {
-            facade.getRetinography(Mock.searchOptions);
-            assert(Mock.searchOptions.modality === 'XC')
-        });
-
-        it('should call errorHandler when an error occurs', function () {
-            let errorMessage = 'Study not found';
-            let res;
-            let a = new Promise((resolve, reject)=> {res = reject;});
-            var b = sinon.stub(StudyService, "getStudyInformation").returns(a);
-            console.log(b)
-            res(errorMessage)
-            // var spy = sinon.spy(facade, ' errorHandler');
-            // facade.getRetinography(Mock.searchOptions);
-            //
-            // sinon.assert.calledWith(spy, errorMessage);
-
-        });
-    });
-
-
     function mocks() {
         Mock.study = {
             patientID: "5007001"
