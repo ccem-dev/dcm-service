@@ -1,4 +1,9 @@
-Readme.md
+# SERVICE - BUILD IMAGE
+sudo docker build -t dcm-service .
+
+# API - BUILD CONTAINER
+sudo docker run --network=dcm-network -p 54001:8080 --name dcm-service dcm-service
+
 
 Instalação dos containers para servidor dcm4chee:
 

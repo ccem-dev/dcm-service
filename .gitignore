@@ -2,9 +2,10 @@
 .vscode/
 **/.idea/
 persistence/
-**/node_modules/**
-.nyc_output/
-**/.nyc_output/
-**/coverage
-api/package-lock.json
-
+**.swp
+**/source/node_modules
+**/package-lock.json
+**/.terraform
+**/*.nyc_output
+terraform.tfstate*
+source/coverage
