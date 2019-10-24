@@ -2,19 +2,11 @@ const request = require('request');
 const https = require('https');
 const Constants = require('../utils/DCMConstants');
 
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 const {
-    ARC_PORT,
-    DCM_HOST,
+    DICOM_REQUEST_PORT,
+    DICOM_HOSTNAME,
     AETS_NAME
 } = process.env;
-
-var arc_port = ARC_PORT || '8443';
-
-var dcm_host = DCM_HOST || '143.54.220.73';
-
-let aets_name = AETS_NAME || 'DCM4CHEE';
-
 
 /*===============*/
 module.exports = {
@@ -30,7 +22,7 @@ function getStudyInformation(token, searchOptions, qsOptions) {
     return new Promise((resolve, reject) => {
         var studyOptions = {
             method: 'GET',
-            url: 'https://' + dcm_host + ':' + arc_port + '/dcm4chee-arc/aets/' + aets_name + '/rs/studies',
+            url: 'https://' + DICOM_HOSTNAME + ':' + DICOM_REQUEST_PORT + '/dcm4chee-arc/aets/' + AETS_NAME + '/rs/studies',
             qs: {
                 'PatientID': searchOptions.patientID,
                 'ModalitiesInStudy': searchOptions.modality,
@@ -106,9 +98,9 @@ function requestImage(token, studyUID, seriesUID, instanceUID, qsOptions) {
     return new Promise((resolve, reject) => {
         const options = {
             method: 'GET',
-            hostname: dcm_host,
-            port: arc_port,
-            path: "/dcm4chee-arc/aets/" + aets_name + "/wado?",
+            hostname: DICOM_HOSTNAME,
+            port: DICOM_REQUEST_PORT,
+            path: "/dcm4chee-arc/aets/" + AETS_NAME + "/wado?",
             qs: {
                 requestType: 'WADO',
                 studyUID: studyUID,

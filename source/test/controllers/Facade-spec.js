@@ -62,7 +62,7 @@ describe('Facade.js Tests', function () {
         });
     });
 
-    describe('the getRetinography method', function () {
+    xdescribe('the getRetinography method', function () {
         it('should set modality to XC', function () {
             facade.getRetinography(Mock.searchOptions);
             assert(Mock.searchOptions.modality === 'XC')

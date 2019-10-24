@@ -5,14 +5,12 @@ const {
   API_PORT
 } = process.env;
 
-const port = API_PORT || 8081;
-
 
 connect();
 
 function listen() {
-  app.listen(port);
-  console.log('Express app started on port ' + port);
+  app.listen(API_PORT);
+  console.log('Express app started on port ' + API_PORT);
 }
 
 function connect() {
