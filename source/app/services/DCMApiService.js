@@ -4,7 +4,7 @@ const Constants = require('../utils/DCMConstants');
 
 const {
     DICOM_REQUEST_PORT,
-    DICOM_HOSTNAME,
+    DICOM_REQUEST_HOSTNAME,
     AETS_NAME
 } = process.env;
 
@@ -22,7 +22,7 @@ function getStudyInformation(token, searchOptions, qsOptions) {
     return new Promise((resolve, reject) => {
         var studyOptions = {
             method: 'GET',
-            url: 'https://' + DICOM_HOSTNAME + ':' + DICOM_REQUEST_PORT + '/dcm4chee-arc/aets/' + AETS_NAME + '/rs/studies',
+            url: 'https://' + DICOM_REQUEST_HOSTNAME + ':' + DICOM_REQUEST_PORT + '/dcm4chee-arc/aets/' + AETS_NAME + '/rs/studies',
             qs: {
                 'PatientID': searchOptions.patientID,
                 'ModalitiesInStudy': searchOptions.modality,
@@ -98,7 +98,7 @@ function requestImage(token, studyUID, seriesUID, instanceUID, qsOptions) {
     return new Promise((resolve, reject) => {
         const options = {
             method: 'GET',
-            hostname: DICOM_HOSTNAME,
+            hostname: DICOM_REQUEST_HOSTNAME,
             port: DICOM_REQUEST_PORT,
             path: "/dcm4chee-arc/aets/" + AETS_NAME + "/wado?",
             qs: {

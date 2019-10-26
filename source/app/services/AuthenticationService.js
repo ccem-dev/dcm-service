@@ -1,8 +1,8 @@
 const request = require('request');
 
 var { //todo change for const
-    DICOM_HOSTNAME,
-    DICOM_TOKEN_PORT,
+    DICOM_AUTHENTICATION_HOST,
+    DICOM_AUTHENTICATION_PORT,
     DICOM_SECRET
 } = process.env;
 
@@ -17,7 +17,7 @@ function authenticate() {
     return new Promise((resolve, reject) => {
         var options = {
             method: 'POST',
-            url: 'https://' + DICOM_HOSTNAME + ':' + DICOM_TOKEN_PORT + '/auth/realms/dcm4che/protocol/openid-connect/token',
+            url: 'https://' + DICOM_AUTHENTICATION_HOST + ':' + DICOM_AUTHENTICATION_PORT + '/auth/realms/dcm4che/protocol/openid-connect/token',
             form: {
                 grant_type: 'client_credentials',
                 client_id: 'curl',
