@@ -12,7 +12,8 @@
     "unit": "mocha test/**/*.js",
     "dev": "node --max-old-space-size=1024 --optimize-for-size app.js",
     "gulp": "gulp",
-    "start": "npm run gulp browser-sync"
+    "start": "npm run gulp browser-sync",
+    "production": "npm install && npm test && npm prune --production"
   },
   "nyc": {
     "include": [
