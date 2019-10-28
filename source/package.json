@@ -40,7 +40,7 @@
     "consign": "0.1.6",
     "express": "4.16.4",
     "express-list-endpoints": "4.0.1",
-    "mongoose": "5.3.8",
+    "mongoose": "5.7.7",
     "request": "^2.88.0",
     "sinon": "7.5.0"
   },
