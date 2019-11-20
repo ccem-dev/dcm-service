@@ -1,10 +1,10 @@
 #!/bin/bash
 
-echo Creating network dcm4chee_default
-  docker network create dcm4chee_default
+echo Creating network dcm-network
+  docker network create dcm-network
 
 echo Creating elasticsearch
-  docker run --restart unless-stopped --network=dcm4chee_default --name elasticsearch \
+  docker run --restart unless-stopped --network=dcm-network --name elasticsearch \
            -e ES_JAVA_OPTS="-Xms1024m -Xmx1024m" \
            -e TAKE_FILE_OWNERSHIP=1 \
            -e discovery.type=single-node \
@@ -16,13 +16,13 @@ echo Creating elasticsearch
            -d docker.elastic.co/elasticsearch/elasticsearch-oss:7.1.1
 
 echo Creating kibana
-  docker run --restart unless-stopped --network=dcm4chee_default --name kibana \
+  docker run --restart unless-stopped --network=dcm-network --name kibana \
            -v /etc/localtime:/etc/localtime:ro \
            -v /etc/timezone:/etc/timezone:ro \
            -d docker.elastic.co/kibana/kibana-oss:7.1.1
 
 echo Creating logstash
-  docker run --restart unless-stopped --network=dcm4chee_default --name logstash \
+  docker run --restart unless-stopped --network=dcm-network --name logstash \
            -p 12201:12201/udp \
            -p 8514:8514/udp \
            -p 8514:8514 \
@@ -32,7 +32,7 @@ echo Creating logstash
            -d dcm4che/logstash-dcm4chee:7.1.1-9
 
 echo Creating ldap
-  docker run --restart unless-stopped --network=dcm4chee_default --name ldap \
+  docker run --restart unless-stopped --network=dcm-network --name ldap \
            --log-driver gelf \
 	   --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
            --log-opt tag=slapd \
@@ -47,7 +47,7 @@ echo Creating ldap
            -d dcm4che/slapd-dcm4chee:2.4.44-17.1
 
 echo Creating keycloak
-  docker run --restart unless-stopped --network=dcm4chee_default --name keycloak \
+  docker run --restart unless-stopped --network=dcm-network --name keycloak \
            --log-driver gelf \
            --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
            --log-opt tag=keycloak \
@@ -79,7 +79,7 @@ docker exec keycloak chmod +x clients.sh
 docker exec keycloak /bin/bash clients.sh 
 
 echo Creating db
- docker run --restart unless-stopped --network=dcm4chee_default --name db \
+ docker run --restart unless-stopped --network=dcm-network --name db \
            --log-driver gelf \
            --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
            --log-opt tag=postgres \
@@ -93,7 +93,7 @@ echo Creating db
            -d dcm4che/postgres-dcm4chee:11.2-17
 
 echo Creating arc
-  docker run --restart unless-stopped --network=dcm4chee_default --name arc \
+  docker run --restart unless-stopped --network=dcm-network --name arc \
            --log-driver gelf \
            --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
            --log-opt tag=dcm4chee-arc \
@@ -119,7 +119,7 @@ echo "Configure the clients on: "$(echo https://$(hostname -I | awk '{print $1}'
 
 read -p "Insert SECRET here: " SECRET_VALUE
 
-  docker run --restart unless-stopped --network=dcm4chee_default --name keycloak-gatekeeper \
+  docker run --restart unless-stopped --network=dcm-network --name keycloak-gatekeeper \
            --log-driver gelf \
            --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
            --log-opt tag=keycloak-gatekeeper \
