@@ -47,7 +47,7 @@ echo Creating ldap
            -d dcm4che/slapd-dcm4chee:2.4.44-17.1
 
 echo Creating keycloak
-  docker run --restart unless-stopped --network=dcm-network --name keycloak \
+  until docker run --restart unless-stopped --network=dcm-network --name keycloak \
            --log-driver gelf \
            --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
            --log-opt tag=keycloak \
@@ -69,14 +69,7 @@ echo Creating keycloak
            -v /etc/localtime:/etc/localtime:ro \
            -v /etc/timezone:/etc/timezone:ro \
            -v $(pwd)/persistence/dcm4chee-arc/keycloak:/opt/keycloak/standalone \
-           -d dcm4che/keycloak:6.0.1-17.0
-
-echo Copy files ....
-docker cp clients.sh keycloak:/
-
-echo Creating Clients
-docker exec keycloak chmod +x clients.sh
-docker exec keycloak /bin/bash clients.sh 
+           -d dcm4che/keycloak:6.0.1-17.0 ; do sleep 1; done
 
 echo Creating db
  docker run --restart unless-stopped --network=dcm-network --name db \
@@ -114,11 +107,11 @@ echo Creating arc
            -v $(pwd)/persistence/dcm4chee-arc/wildfly:/opt/wildfly/standalone \
            -d dcm4che/dcm4chee-arc-psql:5.17.1-secure
 
-echo
-echo "Configure the clients on: "$(echo https://$(hostname -I | awk '{print $1}'):8843/auth/admin/dcm4che/console)
-
-read -p "Insert SECRET here: " SECRET_VALUE
-
+#echo
+#echo "Configure the clients on: "$(echo https://$(hostname -I | awk '{print $1}'):8843/auth/admin/dcm4che/console)
+#
+#read -p "Insert SECRET here: " SECRET_VALUE
+SECRET_VALUE=123456
   docker run --restart unless-stopped --network=dcm-network --name keycloak-gatekeeper \
            --log-driver gelf \
            --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
@@ -138,3 +131,10 @@ read -p "Insert SECRET here: " SECRET_VALUE
            --skip-openid-provider-tls-verify=true \
            --enable-refresh-tokens=true \
            --resources=uri=/*|roles=auditlog
+
+echo Copy files ....
+docker cp clients.sh keycloak:/
+
+echo Creating Clients
+docker exec keycloak chmod +x clients.sh
+docker exec keycloak /bin/bash clients.sh 
