@@ -1,26 +1,20 @@
 #!/bin/bash
 
-ERROR_MESSAGE="already"
+ERROR_MESSAGE='{"errorMessage":"Client dcm4chee-arc-ui already exists"}'
 
-until [[ $ARC==*"$ERROR_MESSAGE"* ]] 
+until [ "$ARC" == "$ERROR_MESSAGE" ]
 do
-  echo $ARC
-    sleep 10
+    
+    sleep 3
     RESULT=`$(URL=${URL}) curl -k \
     --url $URL \
     --data 'grant_type=password' \
     --data 'username=admin' \
     --data 'password=admin' \
     --data 'client_id=admin-cli' `
-
-
     TOKEN=`echo $RESULT | sed 's/.*access_token":"\([^"]*\).*/\1/'`
-
-    #ERROR_MESSAGE='{"errorMessage":"Client dcm4chee-arc-ui already exists"}'
-
-
-
-        ARC=`$(URL2=${URL2}) curl -k -X  POST \
+    
+    ARC=`$(URL2=${URL2}) curl -k -X  POST \
         --url $URL2 \
         -H "Authorization: Bearer $TOKEN" \
         -H 'Content-Type: application/json' \
@@ -34,6 +28,8 @@ do
           "publicClient": true
           }' `
 
+    if [ "$ARC" == "$ERROR_MESSAGE" ]; then echo "true"; else echo "false"; fi
+ 
 done
 
 $(URL2=${URL2}) curl -k -X  POST \
