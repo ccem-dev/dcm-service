@@ -1,28 +1,40 @@
 #!/bin/bash
 
-RESULT=`$(URL=${URL}) curl -k \
---url $URL \
---data 'grant_type=password' \
---data 'username=admin' \
---data 'password=admin' \
---data 'client_id=admin-cli' `
+ERROR_MESSAGE="already"
+
+until [[ $ARC==*"$ERROR_MESSAGE"* ]] 
+do
+  echo $ARC
+    sleep 10
+    RESULT=`$(URL=${URL}) curl -k \
+    --url $URL \
+    --data 'grant_type=password' \
+    --data 'username=admin' \
+    --data 'password=admin' \
+    --data 'client_id=admin-cli' `
 
 
-TOKEN=`echo $RESULT | sed 's/.*access_token":"\([^"]*\).*/\1/'`
+    TOKEN=`echo $RESULT | sed 's/.*access_token":"\([^"]*\).*/\1/'`
 
-$(URL2=${URL2}) curl -k -X  POST \
-  --url $URL2 \
-  -H "Authorization: Bearer $TOKEN" \
-  -H 'Content-Type: application/json' \
-  -d '{
- "id":"DCM-1",
- "clientId":"dcm4chee-arc-ui",
- "name": "dcm4chee-arc-ui",
- "description": "dcm4chee-arc-ui",
- "enabled": true,
- "redirectUris":[ "'$URL_ARC'/*" ],
- "publicClient": true
- }'
+    #ERROR_MESSAGE='{"errorMessage":"Client dcm4chee-arc-ui already exists"}'
+
+
+
+        ARC=`$(URL2=${URL2}) curl -k -X  POST \
+        --url $URL2 \
+        -H "Authorization: Bearer $TOKEN" \
+        -H 'Content-Type: application/json' \
+        -d '{
+          "id":"DCM-1",
+          "clientId":"dcm4chee-arc-ui",
+          "name": "dcm4chee-arc-ui",
+          "description": "dcm4chee-arc-ui",
+          "enabled": true,
+          "redirectUris":[ "'$URL_ARC'/*" ],
+          "publicClient": true
+          }' `
+
+done
 
 $(URL2=${URL2}) curl -k -X  POST \
   --url $URL2 \

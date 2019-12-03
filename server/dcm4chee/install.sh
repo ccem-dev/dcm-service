@@ -1,7 +1,23 @@
 #!/bin/bash
 
-echo Creating network dcm-network
-  docker network create dcm-network
+#echo Preparando ambiente
+#
+#docker stop elasticsearch kibana logstash ldap keycloak keycloak-gatekeeper db arc
+#
+#echo Parando containers DCM 
+#
+#docker rm elasticsearch kibana logstash ldap keycloak keycloak-gatekeeper db arc
+#
+#echo Removendo containers DCM 
+#
+#docker rmi dcm4che/dcm4chee-arc-psql:5.17.1-secure dcm4che/logstash-dcm4chee:7.1.1-9 docker.elastic.co/elasticsearch/elasticsearch-oss:7.1.1 dcm4che/keycloak:6.0.1-17.0 dcm4che/postgres-dcm4chee:11.2-17 docker.elastic.co/kibana/kibana-oss:7.1.1 dcm4che/keycloak-gatekeeper:6.0.1 dcm4che/slapd-dcm4chee:2.4.44-17.1                       
+#
+#echo Removendo imagens Docker DCM 
+#
+#docker network rm dcm-network 
+#
+#echo Creating network dcm-network
+#  docker network create dcm-network
 
 echo Creating elasticsearch
   docker run --restart unless-stopped --network=dcm-network --name elasticsearch \
