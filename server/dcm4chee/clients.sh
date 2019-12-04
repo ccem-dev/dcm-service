@@ -1,13 +1,14 @@
 #!/bin/bash
 
 ERROR_MESSAGE='{"errorMessage":"Client dcm4chee-arc-ui already exists"}'
+#printf "%s\n" "Connecting to Keycloak, please wait...  "
 
 #until [ "$ARC" == "$ERROR_MESSAGE" ]
-for i in {1..12}
+for i in {1..20}
 do
     
-    sleep 10
-    RESULT=`$(URL=${URL}) curl -k \
+    sleep 6
+    RESULT=`$(URL=${URL}) curl -s -k \
     --url $URL \
     --data 'grant_type=password' \
     --data 'username=admin' \
@@ -15,7 +16,7 @@ do
     --data 'client_id=admin-cli' `
     TOKEN=`echo $RESULT | sed 's/.*access_token":"\([^"]*\).*/\1/'`
     
-    ARC=`$(URL2=${URL2}) curl -k -X  POST \
+    ARC=`$(URL2=${URL2}) curl -s -k -X  POST \
         --url $URL2 \
         -H "Authorization: Bearer $TOKEN" \
         -H 'Content-Type: application/json' \
@@ -29,11 +30,11 @@ do
           "publicClient": true
           }' `
 
-    if [ "$ARC" == "$ERROR_MESSAGE" ]; then echo; echo "Connected to Keycloak!"; break; else echo "Connecting to Keycloak, please wait..."; fi
+	  if [ "$ARC" == "$ERROR_MESSAGE" ]; then echo -en "\r(100%)\nConnected to Keycloak!\n"; break; else echo -en "\rConnecting to Keycloak, please wait... "; printf "%s" "($(expr $i \* 5)%)" ; fi
  
 done
 
-$(URL2=${URL2}) curl -k -X  POST \
+$(URL2=${URL2}) curl -s -k -X  POST \
   --url $URL2 \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
@@ -47,7 +48,7 @@ $(URL2=${URL2}) curl -k -X  POST \
  "publicClient": true
  }'
 
- $(URL2=${URL2}) curl -k -X  POST \
+ $(URL2=${URL2}) curl -s -k -X  POST \
   --url $URL2 \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
@@ -63,7 +64,7 @@ $(URL2=${URL2}) curl -k -X  POST \
  "secret": "123456"
  }'
 
- $(URL2=${URL2}) curl -k -X  POST \
+ $(URL2=${URL2}) curl -s -k -X  POST \
   --url $URL2 \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
@@ -78,4 +79,4 @@ $(URL2=${URL2}) curl -k -X  POST \
       "serviceAccountsEnabled": true,
       "publicClient": false
 }'
-echo
+printf "\n%s\n" "Installation finished!"
