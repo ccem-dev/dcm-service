@@ -1,22 +1,22 @@
 #!/bin/bash
 
-echo Preparando ambiente:
+printf "Preparando ambiente:"
 
-echo Parando containers DCM 
+printf "\n%s\n" "Parando containers DCM"
 docker stop elasticsearch kibana logstash ldap keycloak keycloak-gatekeeper db arc
 
-echo Removendo containers DCM 
+printf "\n%s\n" "Removendo containers DCM"
 docker rm elasticsearch kibana logstash ldap keycloak keycloak-gatekeeper db arc
 
-echo Removendo imagens Docker DCM 
+#echo Removendo imagens Docker DCM 
 #docker rmi dcm4che/dcm4chee-arc-psql:5.17.1-secure dcm4che/logstash-dcm4chee:7.1.1-9 docker.elastic.co/elasticsearch/elasticsearch-oss:7.1.1 dcm4che/keycloak:6.0.1-17.0 dcm4che/postgres-dcm4chee:11.2-17 docker.elastic.co/kibana/kibana-oss:7.1.1 dcm4che/keycloak-gatekeeper:6.0.1 dcm4che/slapd-dcm4chee:2.4.44-17.1                       
 
 #docker network rm dcm-network 
 
-echo Creating network dcm-network
+printf "\n%s\n" "Creating network dcm-network"
   docker network create dcm-network
 
-echo Creating elasticsearch
+  printf "\n%s\n" "Creating elasticsearch (1/8)"
   docker run --restart unless-stopped --network=dcm-network --name elasticsearch \
            -e ES_JAVA_OPTS="-Xms1024m -Xmx1024m" \
            -e TAKE_FILE_OWNERSHIP=1 \
@@ -28,13 +28,13 @@ echo Creating elasticsearch
            -v $(pwd)/persistence/dcm4chee-arc/elasticsearch:/usr/share/elasticsearch/data \
            -d docker.elastic.co/elasticsearch/elasticsearch-oss:7.1.1
 
-echo Creating kibana
+  printf "\n%s\n" "Creating kibana (2/8)"
   docker run --restart unless-stopped --network=dcm-network --name kibana \
            -v /etc/localtime:/etc/localtime:ro \
            -v /etc/timezone:/etc/timezone:ro \
            -d docker.elastic.co/kibana/kibana-oss:7.1.1
 
-echo Creating logstash
+printf "\n%s\n" "Creating logstash (3/8)"
   docker run --restart unless-stopped --network=dcm-network --name logstash \
            -p 12201:12201/udp \
            -p 8514:8514/udp \
@@ -44,7 +44,7 @@ echo Creating logstash
            -v $(pwd)/persistence/dcm4chee-arc/logstash/filter-hashtree:/usr/share/logstash/data/filter-hashtree \
            -d dcm4che/logstash-dcm4chee:7.1.1-9
 
-echo Creating ldap
+printf "\n%s\n" "Creating ldap (4/8)"
   docker run --restart unless-stopped --network=dcm-network --name ldap \
            --log-driver gelf \
 	   --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
@@ -59,7 +59,7 @@ echo Creating ldap
            -v $(pwd)/persistence/dcm4chee-arc/slapd.d:/etc/ldap/slapd.d \
            -d dcm4che/slapd-dcm4chee:2.4.44-17.1
 
-echo Creating keycloak
+printf "\n%s\n" "Creating keycloak (5/8)"
   docker run --restart unless-stopped --network=dcm-network --name keycloak \
            --log-driver gelf \
            --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
@@ -84,7 +84,7 @@ echo Creating keycloak
            -v $(pwd)/persistence/dcm4chee-arc/keycloak:/opt/keycloak/standalone \
            -d dcm4che/keycloak:6.0.1-17.0
 
-echo Creating db
+printf "\n%s\n" "Creating db (6/8)"
  docker run --restart unless-stopped --network=dcm-network --name db \
            --log-driver gelf \
            --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
@@ -98,7 +98,7 @@ echo Creating db
            -v $(pwd)/persistence/dcm4chee-arc/db:/var/lib/postgresql/data \
            -d dcm4che/postgres-dcm4chee:11.2-17
 
-echo Creating arc
+printf "\n%s\n" "Creating arc (7/8)"
   docker run --restart unless-stopped --network=dcm-network --name arc \
            --log-driver gelf \
            --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
@@ -125,6 +125,7 @@ echo Creating arc
 #
 #read -p "Insert SECRET here: " SECRET_VALUE
 SECRET_VALUE=123456
+printf "\n%s\n" "Creating keycloak-gatekeeper (8/8)"
   docker run --restart unless-stopped --network=dcm-network --name keycloak-gatekeeper \
            --log-driver gelf \
            --log-opt gelf-address=udp://$(hostname -I | awk '{print $1}'):12201 \
@@ -145,9 +146,9 @@ SECRET_VALUE=123456
            --enable-refresh-tokens=true \
            --resources=uri=/*|roles=auditlog
 
-echo Copy files ....
+printf "\n%s\n" "Copying files ..."
 docker cp clients.sh keycloak:/
 
-echo Creating Clients
+printf "\n%s\n" "Creating Clients"
 docker exec keycloak chmod +x clients.sh
 docker exec keycloak /bin/bash clients.sh 
