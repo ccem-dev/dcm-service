@@ -2,10 +2,11 @@
 
 ERROR_MESSAGE='{"errorMessage":"Client dcm4chee-arc-ui already exists"}'
 
-until [ "$ARC" == "$ERROR_MESSAGE" ]
+#until [ "$ARC" == "$ERROR_MESSAGE" ]
+for i in {1..12}
 do
     
-    sleep 3
+    sleep 10
     RESULT=`$(URL=${URL}) curl -k \
     --url $URL \
     --data 'grant_type=password' \
@@ -28,7 +29,7 @@ do
           "publicClient": true
           }' `
 
-    if [ "$ARC" == "$ERROR_MESSAGE" ]; then echo "true"; else echo "false"; fi
+    if [ "$ARC" == "$ERROR_MESSAGE" ]; then echo; echo "Connected to Keycloak!"; break; else echo "Connecting to Keycloak, please wait..."; fi
  
 done
 
@@ -62,7 +63,6 @@ $(URL2=${URL2}) curl -k -X  POST \
  "secret": "123456"
  }'
 
-
  $(URL2=${URL2}) curl -k -X  POST \
   --url $URL2 \
   -H "Authorization: Bearer $TOKEN" \
@@ -78,3 +78,4 @@ $(URL2=${URL2}) curl -k -X  POST \
       "serviceAccountsEnabled": true,
       "publicClient": false
 }'
+echo
