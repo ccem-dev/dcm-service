@@ -1,12 +1,9 @@
 #!/bin/bash
 
 ERROR_MESSAGE='{"errorMessage":"Client dcm4chee-arc-ui already exists"}'
-#printf "%s\n" "Connecting to Keycloak, please wait...  "
 
-#until [ "$ARC" == "$ERROR_MESSAGE" ]
 for i in {1..20}
-do
-    
+do  
     sleep 6
     RESULT=`$(URL=${URL}) curl -s -k \
     --url $URL \
@@ -28,13 +25,21 @@ do
           "enabled": true,
           "redirectUris":[ "'$URL_ARC'/*" ],
           "publicClient": true
-          }' `
+          }' ` 
 
-	  if [ "$ARC" == "$ERROR_MESSAGE" ]; then echo -en "\r(100%)\nConnected to Keycloak!\n"; break; else echo -en "\rConnecting to Keycloak, please wait... "; printf "%s" "($(expr $i \* 5)%)" ; fi
- 
+if [ "$ARC" == "$ERROR_MESSAGE" ]
+then echo -en "\b\b\b\b\b\b(100%) - Connected to Keycloak!"
+  printf "\nClient dcm4che-arc-ui created."
+  break 
+else echo -en "\rConnecting to Keycloak, please wait... "
+  printf "%s" "($(expr $i \* 5)%)"
+fi
+
 done
 
-$(URL2=${URL2}) curl -s -k -X  POST \
+for i in {1..2}
+do
+WDFLY_CLIENT=`$(URL2=${URL2}) curl -s -k -X  POST \
   --url $URL2 \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
@@ -46,9 +51,17 @@ $(URL2=${URL2}) curl -s -k -X  POST \
  "enabled": true,
  "redirectUris":[ "'$URL_WF'/*" ],
  "publicClient": true
- }'
+ }'`
+done
 
- $(URL2=${URL2}) curl -s -k -X  POST \
+ if [ "$WDFLY_CLIENT" == '{"errorMessage":"Client wildfly-console already exists"}' ] 
+    then printf "\nClient wildfly-console created." 
+    else printf "\nClient wildfly-console not created."
+  fi 
+
+for i in {1..2}
+  do
+ KIBANA_CLIENT=`$(URL2=${URL2}) curl -s -k -X  POST \
   --url $URL2 \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
@@ -62,9 +75,17 @@ $(URL2=${URL2}) curl -s -k -X  POST \
  "publicClient": false,
  "clientAuthenticatorType": "client-secret",
  "secret": "123456"
- }'
+ }'`
+done
 
- $(URL2=${URL2}) curl -s -k -X  POST \
+  if [ "$KIBANA_CLIENT" == '{"errorMessage":"Client kibana already exists"}' ] 
+    then printf "\nClient Kibana created." 
+    else printf "\nClient Kibana not created."
+  fi 
+
+for i in {1..2}
+do
+ CURL_CLIENT=`$(URL2=${URL2}) curl -s -k -X  POST \
   --url $URL2 \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
@@ -78,5 +99,16 @@ $(URL2=${URL2}) curl -s -k -X  POST \
       "standardFlowEnabled": false,
       "serviceAccountsEnabled": true,
       "publicClient": false
-}'
+}'`
+done
+
+  if [ "$CURL_CLIENT" == '{"errorMessage":"Client curl already exists"}' ] 
+    then printf "\nClient Curl created." 
+    else printf "\nClient Curl not created."
+  fi 
+
+if [ "$ARC" == "$ERROR_MESSAGE" ]
+then printf "\n\nClients created successfully!\n"
 printf "\n%s\n" "Installation finished!"
+else printf "\n\nClients not created !\n\nRun install.sh again.\n\n"
+fi
