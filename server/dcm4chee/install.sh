@@ -8,11 +8,6 @@ docker stop elasticsearch kibana logstash ldap keycloak keycloak-gatekeeper db a
 printf "\n%s\n" "Removendo containers DCM"
 docker rm elasticsearch kibana logstash ldap keycloak keycloak-gatekeeper db arc
 
-#echo Removendo imagens Docker DCM 
-#docker rmi dcm4che/dcm4chee-arc-psql:5.17.1-secure dcm4che/logstash-dcm4chee:7.1.1-9 docker.elastic.co/elasticsearch/elasticsearch-oss:7.1.1 dcm4che/keycloak:6.0.1-17.0 dcm4che/postgres-dcm4chee:11.2-17 docker.elastic.co/kibana/kibana-oss:7.1.1 dcm4che/keycloak-gatekeeper:6.0.1 dcm4che/slapd-dcm4chee:2.4.44-17.1                       
-
-#docker network rm dcm-network 
-
 printf "\n%s\n" "Creating network dcm-network"
   docker network create dcm-network
 
@@ -120,10 +115,6 @@ printf "\n%s\n" "Creating arc (7/8)"
            -v $(pwd)/persistence/dcm4chee-arc/wildfly:/opt/wildfly/standalone \
            -d dcm4che/dcm4chee-arc-psql:5.17.1-secure
 
-#echo
-#echo "Configure the clients on: "$(echo https://$(hostname -I | awk '{print $1}'):8843/auth/admin/dcm4che/console)
-#
-#read -p "Insert SECRET here: " SECRET_VALUE
 SECRET_VALUE=123456
 printf "\n%s\n" "Creating keycloak-gatekeeper (8/8)"
   docker run --restart unless-stopped --network=dcm-network --name keycloak-gatekeeper \
