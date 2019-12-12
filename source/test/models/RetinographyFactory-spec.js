@@ -24,7 +24,7 @@ describe('RetinographyFactory.js Tests', function () {
     });
 
     function mocks() {
-        Mock.result = "{\"date\":\"2019-03-01T00:00:00Z\",\"eye\":\"right\",\"result\":\"[]\"}";
+        Mock.result = "{\"date\":\"2019-03-01T00:00:00.000Z\",\"eye\":\"right\",\"result\":\"[]\"}";
         Mock.study = {
             date: "20190301",
             patientID: 5007001,
