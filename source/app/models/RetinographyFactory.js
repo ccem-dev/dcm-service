@@ -44,7 +44,6 @@ function Retinography(jsonObject, study) {
 
     function addResult(result) {
         if (result) {
-            console.log(result);
             self.result.push(result);
         }
     }
