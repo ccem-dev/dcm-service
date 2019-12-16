@@ -50,10 +50,15 @@ function Retinography(jsonObject, study) {
 
     function toJSON() {
         let obj = {};
-        obj.date = self.studyDate;
+        obj.date = formatDate(self.studyDate);
         obj.eye = self.laterality === 'L' ? 'left' : 'right';
         obj.result = JSON.stringify(self.result);
         return obj;
+    }
+
+    function formatDate(dateString) {
+        let formattedString = dateString.slice(0, 4) + "-" + dateString.slice(4, 6) + "-" + dateString.slice(6, 8);
+        return new Date(formattedString).toISOString();
     }
 
     return self;

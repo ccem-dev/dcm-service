@@ -1,6 +1,6 @@
 const request = require('request');
 
-var { //todo change for const
+const {
     DICOM_AUTHENTICATION_HOST,
     DICOM_AUTHENTICATION_PORT,
     DICOM_SECRET
