@@ -44,7 +44,7 @@ function getStudyInformation(token, searchOptions, qsOptions) {
                     } else if (response.statusCode === 204) {
                         reject('Study not found');
                     } else {
-                        reject('study error');
+                        reject('study error - ' + response.statusCode);
                     }
                 } catch (e) {
                     reject(e);
@@ -100,17 +100,10 @@ function requestImage(token, studyUID, seriesUID, instanceUID, qsOptions) {
             method: 'GET',
             hostname: DICOM_REQUEST_HOSTNAME,
             port: DICOM_REQUEST_PORT,
-            path: "/dcm4chee-arc/aets/" + AETS_NAME + "/wado?",
-            qs: {
-                requestType: 'WADO',
-                studyUID: studyUID,
-                seriesUID: seriesUID,
-                objectUID: instanceUID,
-                contentType: 'image/jpeg',
-                columns: '280',
-                frameNumber: '1',
-                ...qsOptions
-            },
+            path: "/dcm4chee-arc/aets/DCM4CHEE/wado?requestType=WADO" +
+                "&studyUID=" + studyUID +
+                "&seriesUID=" + seriesUID +
+                "&objectUID=" + instanceUID,
             headers: {
                 'Authorization': 'Bearer ' + token,
                 "cache-control": "no-cache",

@@ -38,7 +38,7 @@ function getRetinography(token, study) {
     }
 
     function requestImages(token, retinography, instances) {
-        return Promise.all(instances.map(instanceUID => {
+        return Promise.all(retinography.instances.map(instanceUID => {
             return DcmApiService.requestImage(token, retinography.studyUID, retinography.seriesUID, instanceUID)
                 .then(result => retinography.addResult(result));
         }));
