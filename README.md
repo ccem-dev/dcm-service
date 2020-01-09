@@ -49,6 +49,8 @@ Passo 3: Permissão de escrita para o Logstash
 ```
 $ sudo mkdir -p ./persistence/dcm4chee-arc/logstash
 $ sudo chown 1000:1000 ./persistence/dcm4chee-arc/logstash
+$ sudo touch ./persistence/dcm4chee-arc/logstash/filter-hashtree
+$ sudo chown 1000:1000 ./persistence/dcm4chee-arc/logstash/filter-hashtree
 ```
 #####################################################################
 
